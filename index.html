@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Allbridge Core - Survival Growth Plan</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0e1a;--card:#111827;--border:#1e293b;--primary:#6366f1;--primary-light:#818cf8;--accent:#10b981;--danger:#ef4444;--warning:#f59e0b;--text:#e2e8f0;--muted:#94a3b8;--surface:#1e293b}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+.container{max-width:1440px;margin:0 auto;padding:20px}
+header{text-align:center;padding:40px 20px 20px;margin-bottom:10px}
+header h1{font-size:2.4em;background:linear-gradient(135deg,var(--danger),var(--warning));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+header p{color:var(--muted);font-size:1.05em}
+.war-banner{background:linear-gradient(135deg,rgba(239,68,68,.15),rgba(245,158,11,.1));border:1px solid rgba(239,68,68,.3);border-radius:12px;padding:20px 24px;margin-bottom:30px;text-align:center}
+.war-banner h3{color:var(--danger);margin-bottom:6px}
+.war-banner p{color:var(--muted);font-size:.9em}
+.nav{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:30px;position:sticky;top:0;background:var(--bg);padding:10px 0;z-index:100;border-bottom:1px solid var(--border)}
+.nav button{background:var(--surface);border:1px solid var(--border);color:var(--muted);padding:9px 16px;border-radius:8px;cursor:pointer;font-size:.85em;transition:all .2s}
+.nav button.active,.nav button:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
+.section{display:none}.section.active{display:block}
+.grid{display:grid;gap:20px;margin-bottom:20px}
+.grid-4{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.grid-3{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.grid-2{grid-template-columns:repeat(auto-fit,minmax(400px,1fr))}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px}
+.card h3{color:var(--primary-light);margin-bottom:12px;font-size:1.05em}
+.card h2{font-size:1.8em;margin-bottom:4px}
+.card .label{color:var(--muted);font-size:.82em;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.card .change{font-size:.85em;margin-top:4px}
+.change.up{color:var(--accent)}.change.down{color:var(--danger)}
+.stat-icon{font-size:1.4em;margin-bottom:8px}
+.chart-container{position:relative;height:320px}
+table{width:100%;border-collapse:collapse;font-size:.88em}
+th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+th{color:var(--muted);font-weight:600;text-transform:uppercase;font-size:.78em;letter-spacing:.5px}
+tr:hover{background:rgba(99,102,241,.05)}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75em;font-weight:600}
+.badge-high{background:rgba(239,68,68,.15);color:#ef4444}
+.badge-med{background:rgba(245,158,11,.15);color:#f59e0b}
+.badge-low{background:rgba(16,185,129,.15);color:#10b981}
+.badge-critical{background:rgba(239,68,68,.25);color:#ff6b6b}
+.badge-dead{background:rgba(100,116,139,.2);color:#64748b}
+.threat-box{background:linear-gradient(135deg,rgba(239,68,68,.08),rgba(239,68,68,.03));border:1px solid rgba(239,68,68,.2);border-radius:10px;padding:20px;margin-bottom:16px}
+.threat-box h4{color:var(--danger);margin-bottom:8px}
+.opp-box{background:linear-gradient(135deg,rgba(16,185,129,.08),rgba(16,185,129,.03));border:1px solid rgba(16,185,129,.2);border-radius:10px;padding:20px;margin-bottom:16px}
+.opp-box h4{color:var(--accent);margin-bottom:8px}
+.timeline{position:relative;padding-left:30px}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--border)}
+.timeline-item{position:relative;margin-bottom:22px;padding-left:20px}
+.timeline-item::before{content:'';position:absolute;left:-26px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--primary);border:2px solid var(--bg)}
+.timeline-item h4{color:var(--primary-light);margin-bottom:4px;font-size:.95em}
+.keyword-tag{display:inline-block;background:var(--surface);border:1px solid var(--border);padding:4px 12px;border-radius:6px;margin:3px;font-size:.85em}
+.keyword-tag.high{border-color:var(--accent);color:var(--accent)}
+.keyword-tag.med{border-color:var(--warning);color:var(--warning)}
+.action-item{display:flex;gap:12px;padding:14px;background:var(--surface);border-radius:8px;margin-bottom:8px;align-items:flex-start}
+.action-num{background:var(--primary);color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.78em;font-weight:700;flex-shrink:0}
+.action-item h4{font-size:.92em;margin-bottom:3px}
+.action-item p{color:var(--muted);font-size:.83em}
+.competitor-bar{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.competitor-bar .name{width:110px;font-size:.82em;color:var(--muted)}
+.competitor-bar .bar{flex:1;height:22px;background:var(--surface);border-radius:4px;overflow:hidden}
+.competitor-bar .fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:8px;font-size:.72em;font-weight:600}
+.highlight-box{border-radius:12px;padding:24px;text-align:center;margin:16px 0}
+.highlight-box h2{font-size:1.8em}
+.tabs{display:flex;gap:4px;margin-bottom:14px;border-bottom:1px solid var(--border)}
+.tabs button{background:none;border:none;color:var(--muted);padding:8px 14px;cursor:pointer;border-bottom:2px solid transparent;font-size:.84em}
+.tabs button.active{color:var(--primary-light);border-bottom-color:var(--primary)}
+.subtab{display:none}.subtab.active{display:block}
+.checklist label{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;cursor:pointer;border-radius:6px;font-size:.9em}
+.checklist label:hover{background:var(--surface)}
+.checklist input[type=checkbox]{margin-top:3px;accent-color:var(--primary)}
+.checklist .done{text-decoration:line-through;color:var(--muted)}
+.vs-table{width:100%}.vs-table td{vertical-align:top;padding:8px 12px;font-size:.85em}
+.vs-table .them{color:var(--danger)}.vs-table .us{color:var(--accent)}
+.funnel{display:flex;flex-direction:column;gap:6px;margin:16px 0}
+.funnel-step{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:8px;font-size:.88em}
+.funnel-step .num{font-size:1.3em;font-weight:700;width:40px}
+pre{background:var(--surface);padding:14px;border-radius:8px;overflow-x:auto;font-size:.83em;color:var(--accent);line-height:1.5}
+@media(max-width:768px){.grid-4,.grid-3,.grid-2{grid-template-columns:1fr}header h1{font-size:1.6em}.chart-container{height:250px}.nav{gap:4px}.nav button{padding:7px 10px;font-size:.8em}}
+</style>
+</head>
+<body>
+<header>
+<h1>Allbridge Core - Survival Growth Plan</h1>
+<p>Guerrilla Strategy for a Resource-Constrained Protocol | March 2026</p>
+</header>
+
+<div class="container">
+<div class="war-banner">
+<h3>The Battlefield Has Changed</h3>
+<p>USDT0 has processed $11.3B+ since Jan 2025. CCTP V2 has processed $110B+ cumulative. Wormhole has $2.5B TVL and Jump Trading backing.<br>
+Allbridge has <strong>$24M TVL</strong>, <strong>no VC war chest</strong>, and <strong>declining volumes</strong>. This plan is built for that reality.</p>
+</div>
+
+<nav class="nav">
+<button class="active" onclick="showSection('situation')">Situation Analysis</button>
+<button onclick="showSection('threat')">Threat Map</button>
+<button onclick="showSection('analytics')">Your Data</button>
+<button onclick="showSection('moats')">Defensible Moats</button>
+<button onclick="showSection('guerrilla')">Guerrilla SEO</button>
+<button onclick="showSection('content')">Content Weapons</button>
+<button onclick="showSection('technical')">Technical SEO</button>
+<button onclick="showSection('pivot')">Pivot Opportunities</button>
+<button onclick="showSection('roadmap')">60-Day Battle Plan</button>
+</nav>
+
+<!-- ========== SITUATION ANALYSIS ========== -->
+<div id="situation" class="section active">
+<div class="grid grid-4">
+<div class="card">
+<div class="stat-icon">&#128200;</div>
+<div class="label">Monthly Volume (Feb 2026)</div>
+<h2>$34.6M</h2>
+<div class="change down">-86% from $248M peak (Mar 2024)</div>
+</div>
+<div class="card">
+<div class="stat-icon">&#128181;</div>
+<div class="label">Monthly Fees (Feb 2026)</div>
+<h2>$104K</h2>
+<div class="change down">-87% from $775K peak (Mar 2024)</div>
+</div>
+<div class="card">
+<div class="stat-icon">&#128101;</div>
+<div class="label">Monthly Transfers (Feb 2026)</div>
+<h2>8,123</h2>
+<div class="change down">-93% from 113K peak (Mar 2024)</div>
+</div>
+<div class="card">
+<div class="stat-icon">&#128176;</div>
+<div class="label">TVL (Current)</div>
+<h2>$24.3M</h2>
+<div class="change down">-50% from $48M peak (Nov 2024)</div>
+</div>
+</div>
+
+<div class="grid grid-2">
+<div class="card">
+<h3>Volume Decline Timeline</h3>
+<div class="chart-container"><canvas id="volumeChart"></canvas></div>
+</div>
+<div class="card">
+<h3>Revenue Crisis</h3>
+<div class="chart-container"><canvas id="feesChart"></canvas></div>
+</div>
+</div>
+
+<div class="card" style="margin-bottom:20px">
+<h3>Why Volume is Dying - Root Cause Analysis</h3>
+<div class="grid grid-3" style="margin-top:12px">
+<div class="threat-box">
+<h4>1. USDT0 (Tether + LayerZero)</h4>
+<p style="color:var(--muted);font-size:.85em">Launched Jan 2025. Lock-and-mint via OFT standard. $7.5B circulating supply. $11.3B+ in transfers. <strong>Zero slippage</strong> because Tether literally mints/burns USDT. Now on Solana, Polygon, Arbitrum, Optimism, Berachain. Allbridge's USDT pools simply can't compete with zero-slippage native minting.</p>
+</div>
+<div class="threat-box">
+<h4>2. Circle CCTP V2</h4>
+<p style="color:var(--muted);font-size:.85em">$110B+ cumulative volume. 5.3M+ transfers. 17 blockchains. Burn-and-mint = <strong>zero slippage, zero bridge fees</strong> (only gas). V1 deprecation starts Jul 2026. Circle IS the USDC issuer — no LP can compete. Across, Stargate, even Wormhole now use CCTP as backend infrastructure.</p>
+</div>
+<div class="threat-box">
+<h4>3. Wormhole / Jump Trading</h4>
+<p style="color:var(--muted);font-size:.85em">$2.5B TVL. $225M raised at $2.5B valuation. 1B+ messages. 200+ apps built on it. Jump Trading builds Firedancer for Solana = deep ecosystem lock-in. Uniswap approved it as "safest bridge." <strong>They can outspend and out-lobby you in every ecosystem.</strong></p>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>Honest Assessment: Where Allbridge Stands</h3>
+<table>
+<thead><tr><th>Dimension</th><th>Allbridge</th><th>Competitors</th><th>Verdict</th></tr></thead>
+<tbody>
+<tr><td>USDT Bridging</td><td>LP pools with slippage</td><td>USDT0: zero slippage native mint</td><td><span class="badge badge-critical">Losing</span></td></tr>
+<tr><td>USDC Bridging</td><td>LP pools with slippage</td><td>CCTP V2: zero slippage burn/mint</td><td><span class="badge badge-critical">Losing</span></td></tr>
+<tr><td>Funding</td><td>$2M raised, bootstrapped</td><td>Wormhole: $225M / Stargate: LayerZero backed</td><td><span class="badge badge-critical">Losing</span></td></tr>
+<tr><td>Ecosystem Lobbying</td><td>None</td><td>Jump Trading builds Solana infra</td><td><span class="badge badge-critical">Losing</span></td></tr>
+<tr><td>Non-EVM Support</td><td>Stellar, Tron, Solana, SUI, Algorand</td><td>Most focus on EVM only</td><td><span class="badge badge-low">Winning</span></td></tr>
+<tr><td>EVM + Non-EVM Bridge</td><td>Deep expertise, working product</td><td>Wormhole matches, others weak</td><td><span class="badge badge-med">Competitive</span></td></tr>
+<tr><td>SDK/API for Integrators</td><td>JS, REST, smart contract proxy</td><td>Variable quality</td><td><span class="badge badge-low">Winning</span></td></tr>
+<tr><td>Security Audits</td><td>Quarkslab, Kudelski, Sherlock</td><td>All major protocols audited</td><td><span class="badge badge-med">Parity</span></td></tr>
+<tr><td>CCTP/OFT Routing</td><td>Already integrated as fallback</td><td>Across, Stargate do same</td><td><span class="badge badge-med">Parity</span></td></tr>
+<tr><td>Stablecoin Focus</td><td>Pure play stablecoin bridge</td><td>Most are multi-asset</td><td><span class="badge badge-low">Niche Advantage</span></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- ========== THREAT MAP ========== -->
+<div id="threat" class="section">
+<div class="card" style="margin-bottom:20px">
+<h3>Market Structure Has Permanently Changed</h3>
+<p style="color:var(--muted);font-size:.9em;margin-bottom:16px">The core liquidity pool bridging model is structurally disadvantaged. Native issuers are vertically integrating. This isn't a market cycle — it's a permanent shift.</p>
+
+<div class="grid grid-2" style="margin-top:16px">
+<div>
+<h4 style="color:var(--danger);margin-bottom:12px">Markets You're Losing (Accept & Exit)</h4>
+<table>
+<thead><tr><th>Market</th><th>Why You Can't Win</th><th>Timeline</th></tr></thead>
+<tbody>
+<tr><td>USDC on EVM chains</td><td>CCTP V2 = free, zero slippage, Circle-backed</td><td><span class="badge badge-dead">Lost</span></td></tr>
+<tr><td>USDT on major EVM</td><td>USDT0 via LayerZero = Tether-minted, zero slippage</td><td><span class="badge badge-critical">Losing Now</span></td></tr>
+<tr><td>Solana USDT</td><td>USDT0 launched on Solana via LayerZero</td><td><span class="badge badge-critical">Lost Q1 2026</span></td></tr>
+<tr><td>Any chain where CCTP + USDT0 both exist</td><td>Both native issuers present = no LP need</td><td><span class="badge badge-high">6-12 months</span></td></tr>
+</tbody>
+</table>
+</div>
+<div>
+<h4 style="color:var(--accent);margin-bottom:12px">Markets Where You Can Still Win</h4>
+<table>
+<thead><tr><th>Market</th><th>Why You Can Win</th><th>Window</th></tr></thead>
+<tbody>
+<tr><td>Stellar stablecoins</td><td>CCTP/USDT0 not on Stellar. You have Soroban contracts</td><td><span class="badge badge-low">12-24 months</span></td></tr>
+<tr><td>Tron USDT (legacy)</td><td>USDT0 doesn't replace TRC-20 USDT, cross-chain routes needed</td><td><span class="badge badge-low">6-12 months</span></td></tr>
+<tr><td>Exotic chain pairs</td><td>Stellar-Tron, SUI-Tron, Algorand-Solana = nobody else does this</td><td><span class="badge badge-low">12+ months</span></td></tr>
+<tr><td>B2B/API integrations</td><td>SDK + REST + proxy = easiest integration. Enterprise needs simplicity</td><td><span class="badge badge-low">Growing market</span></td></tr>
+<tr><td>Small/new chains</td><td>Be first bridge on emerging chains before CCTP/USDT0 arrives</td><td><span class="badge badge-med">Race condition</span></td></tr>
+<tr><td>CCTP/OFT aggregation</td><td>Route through CCTP + USDT0 + your pools = best-rate aggregation</td><td><span class="badge badge-low">Now</span></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<div class="card" style="margin-bottom:20px">
+<h3>The Extinction Timeline for LP Bridges</h3>
+<div class="chart-container"><canvas id="extinctionChart"></canvas></div>
+<p style="color:var(--muted);font-size:.82em;margin-top:12px;text-align:center">As CCTP V2 and USDT0 expand to more chains, the addressable market for LP-based bridges shrinks. The question is: what do you become instead?</p>
+</div>
+
+<div class="card">
+<h3>Competitive Funding Reality</h3>
+<div style="margin-top:16px">
+<div class="competitor-bar"><div class="name">Wormhole</div><div class="bar"><div class="fill" style="width:95%;background:linear-gradient(90deg,#ef4444,#f87171)">$225M raised / Jump Trading / $2.5B valuation</div></div></div>
+<div class="competitor-bar"><div class="name">LayerZero</div><div class="bar"><div class="fill" style="width:90%;background:linear-gradient(90deg,#f59e0b,#fbbf24)">$263M raised / a16z, Sequoia / Powers USDT0</div></div></div>
+<div class="competitor-bar"><div class="name">Stargate</div><div class="bar"><div class="fill" style="width:75%;background:linear-gradient(90deg,#6366f1,#818cf8)">LayerZero ecosystem / $300M+ TVL</div></div></div>
+<div class="competitor-bar"><div class="name">Across</div><div class="bar"><div class="fill" style="width:50%;background:linear-gradient(90deg,#10b981,#34d399)">$98M TVL / UMA backed / Integrated CCTP V2</div></div></div>
+<div class="competitor-bar"><div class="name">deBridge</div><div class="bar"><div class="fill" style="width:40%;background:linear-gradient(90deg,#06b6d4,#22d3ee)">Growing fast / Aggressive marketing</div></div></div>
+<div class="competitor-bar"><div class="name" style="color:var(--accent);font-weight:700">Allbridge</div><div class="bar"><div class="fill" style="width:8%;background:linear-gradient(90deg,#8b5cf6,#a78bfa)">$2M</div></div></div>
+</div>
+<p style="color:var(--muted);font-size:.85em;margin-top:16px">You will not outspend them. You need to out-think and out-hustle them. Every dollar of marketing spend must have 10x ROI. SEO is the highest-leverage channel you have — it compounds for free.</p>
+</div>
+</div>
+
+<!-- ========== YOUR DATA ========== -->
+<div id="analytics" class="section">
+<div class="grid grid-2">
+<div class="card">
+<h3>Monthly Transfers (Declining)</h3>
+<div class="chart-container"><canvas id="transfersChart"></canvas></div>
+</div>
+<div class="card">
+<h3>USDT vs USDC Volume Share</h3>
+<div class="chart-container"><canvas id="stablecoinChart"></canvas></div>
+</div>
+</div>
+
+<div class="grid grid-2">
+<div class="card">
+<h3>Chain Volume Distribution (Latest)</h3>
+<div class="chart-container"><canvas id="chainChart"></canvas></div>
+</div>
+<div class="card">
+<h3>What Your Data Tells Us</h3>
+<div style="margin-top:8px">
+<div class="opp-box">
+<h4>TRX = 38% of Your Volume</h4>
+<p style="color:var(--muted);font-size:.85em">Tron is your #1 chain. USDT0 doesn't natively replace TRC-20 USDT flows yet. This is your <strong>most defensible revenue</strong>. Every SEO keyword around Tron bridging should be yours.</p>
+</div>
+<div class="opp-box">
+<h4>USDT Dominates at 65%+ of Volume</h4>
+<p style="color:var(--muted);font-size:.85em">Your users bridge USDT more than USDC. CCTP only covers USDC. Your USDT flows (especially Tron) are safer from CCTP disruption — but USDT0 is the threat here.</p>
+</div>
+<div class="threat-box">
+<h4>Transfer Count Collapsed 93%</h4>
+<p style="color:var(--muted);font-size:.85em">From 113K to 8K monthly. Retail users have left. Remaining users are larger (avg $4,259/tx in Feb 2026 vs $2,188 in Mar 2024). You're serving whales/institutions now — your strategy should match.</p>
+</div>
+<div class="threat-box">
+<h4>Revenue Can't Sustain Full Team Long-Term</h4>
+<p style="color:var(--muted);font-size:.85em">$104K/month in fees (Feb 2026). 20% to governance = ~$83K net. With 3 support staff + dev team, this is tight. Growth is existential, not optional.</p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>Volume by Month (Full History)</h3>
+<div class="chart-container" style="height:280px"><canvas id="fullVolumeChart"></canvas></div>
+</div>
+</div>
+
+<!-- ========== DEFENSIBLE MOATS ========== -->
+<div id="moats" class="section">
+<div class="card" style="margin-bottom:20px">
+<h3>Your 5 Actual Moats (Not Wishful Thinking)</h3>
+<p style="color:var(--muted);font-size:.9em;margin-bottom:20px">These are the only things that give you a defensible position. Every growth action should reinforce one or more of these.</p>
+
+<div class="grid grid-3" style="margin-top:16px">
+<div class="opp-box" style="border-color:rgba(99,102,241,.3);background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(99,102,241,.02))">
+<h4 style="color:var(--primary-light)">MOAT 1: Non-EVM Expertise</h4>
+<p style="color:var(--muted);font-size:.85em"><strong>Stellar, Tron, Solana, SUI, Algorand</strong> — you have working smart contracts on all of these. Most bridges are EVM-only or add non-EVM as an afterthought. Your Soroban (Stellar) and Tron contracts are unique assets.</p>
+<p style="color:var(--primary-light);font-size:.82em;margin-top:8px"><strong>SEO play:</strong> Own every "bridge to Stellar" and "bridge from Tron" keyword.</p>
+</div>
+<div class="opp-box" style="border-color:rgba(99,102,241,.3);background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(99,102,241,.02))">
+<h4 style="color:var(--primary-light)">MOAT 2: Exotic Route Pairs</h4>
+<p style="color:var(--muted);font-size:.85em"><strong>Stellar↔Tron, SUI↔Tron, Algorand↔Solana</strong> — routes that literally nobody else supports. These are low volume individually but zero competition = 100% market share.</p>
+<p style="color:var(--primary-light);font-size:.82em;margin-top:8px"><strong>SEO play:</strong> Create landing pages for every unique route pair. You'll rank #1 instantly.</p>
+</div>
+<div class="opp-box" style="border-color:rgba(99,102,241,.3);background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(99,102,241,.02))">
+<h4 style="color:var(--primary-light)">MOAT 3: Developer Integration Simplicity</h4>
+<p style="color:var(--muted);font-size:.85em"><strong>SDK + REST API + Smart Contract Proxy</strong> — 3 integration paths. One integration = all chains. This is a B2B goldmine as enterprises want simple APIs for multi-chain treasury ops.</p>
+<p style="color:var(--primary-light);font-size:.82em;margin-top:8px"><strong>SEO play:</strong> Target "stablecoin bridge API", "cross-chain payments API" keywords.</p>
+</div>
+<div class="opp-box" style="border-color:rgba(99,102,241,.3);background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(99,102,241,.02))">
+<h4 style="color:var(--primary-light)">MOAT 4: CCTP/OFT Routing Layer</h4>
+<p style="color:var(--muted);font-size:.85em">You already route through CCTP and LayerZero OFT where available. <strong>Position as an aggregator:</strong> Allbridge finds the cheapest route whether it's your LP pools, CCTP, or USDT0. Users don't care about the plumbing.</p>
+<p style="color:var(--primary-light);font-size:.82em;margin-top:8px"><strong>SEO play:</strong> "Cheapest stablecoin bridge", "best rate cross-chain" keywords.</p>
+</div>
+<div class="opp-box" style="border-color:rgba(99,102,241,.3);background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(99,102,241,.02))">
+<h4 style="color:var(--primary-light)">MOAT 5: Tron Dominance</h4>
+<p style="color:var(--muted);font-size:.85em">38% of your volume = Tron. TRC-20 USDT is the most used stablecoin globally (Tron processes more USDT than Ethereum). CCTP doesn't support USDC on Tron. USDT0 doesn't fully replace TRC-20 flows. <strong>This is your fortress.</strong></p>
+<p style="color:var(--primary-light);font-size:.82em;margin-top:8px"><strong>SEO play:</strong> "Bridge USDT to Tron", "TRC-20 bridge", "Tron stablecoin bridge" = must own.</p>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>Strategic Positioning: From "Bridge" to "Cross-Chain Routing Layer"</h3>
+<p style="color:var(--muted);font-size:.9em;margin-bottom:16px">The pure LP bridge model is dying. But routing/aggregation is growing. Here's the evolution:</p>
+<div class="funnel">
+<div class="funnel-step" style="background:rgba(239,68,68,.1)"><div class="num" style="color:var(--danger)">Old</div><div>Allbridge = LP Pool Bridge (competes with CCTP/USDT0 on slippage — can't win)</div></div>
+<div class="funnel-step" style="background:rgba(245,158,11,.1)"><div class="num" style="color:var(--warning)">Now</div><div>Allbridge = Multi-Route Optimizer (LP pools + CCTP + OFT = always finds best rate)</div></div>
+<div class="funnel-step" style="background:rgba(16,185,129,.1)"><div class="num" style="color:var(--accent)">Next</div><div>Allbridge = Cross-Chain Infrastructure API (B2B payments, treasury, wallets integrate one SDK for all chains)</div></div>
+</div>
+<p style="color:var(--muted);font-size:.85em;margin-top:12px">This positioning shift should be reflected in ALL SEO content. Don't market yourself as "another bridge." Market yourself as the <strong>unified cross-chain routing layer for stablecoins</strong> — especially for routes that native issuers don't cover.</p>
+</div>
+</div>
+
+<!-- ========== GUERRILLA SEO ========== -->
+<div id="guerrilla" class="section">
+<div class="card" style="margin-bottom:20px">
+<h3>Zero-Budget SEO Strategy</h3>
+<p style="color:var(--muted);font-size:.9em;margin-bottom:16px">You can't spend $10K/mo on content writers and link building. Here's what works with zero budget and your existing team.</p>
+
+<div class="grid grid-2" style="margin-top:16px">
+<div>
+<h4 style="color:var(--accent);margin-bottom:12px">Highest ROI Actions (Free)</h4>
+<div class="action-item"><div class="action-num" style="background:var(--accent)">1</div><div><h4>Fix core.allbridge.io Technical SEO</h4><p>SSR/pre-render the landing page. Add meta description. This alone can 2-3x your organic traffic. <strong>Dev team can do this in 1-2 days.</strong></p></div></div>
+<div class="action-item"><div class="action-num" style="background:var(--accent)">2</div><div><h4>Create Route-Specific Landing Pages</h4><p>"/bridge/usdt-tron-to-ethereum", "/bridge/usdc-stellar-to-solana" — one page per route pair. Programmatically generate from your supported routes. <strong>Dev task, not content task.</strong></p></div></div>
+<div class="action-item"><div class="action-num" style="background:var(--accent)">3</div><div><h4>Turn Your Analytics Into Content</h4><p>You have unique data. Nobody else publishes monthly cross-chain flow reports. Publish "Allbridge Core Cross-Chain Report: [Month] 2026" on your blog. <strong>Free — you already have the data.</strong></p></div></div>
+<div class="action-item"><div class="action-num" style="background:var(--accent)">4</div><div><h4>FAQ Schema on allbridge.io</h4><p>You already have FAQ content on the homepage. Wrap it in FAQPage schema = rich results in Google. <strong>30 minutes of dev work.</strong></p></div></div>
+<div class="action-item"><div class="action-num" style="background:var(--accent)">5</div><div><h4>Optimize Existing Blog Posts</h4><p>You have 31 blog posts. Most lack meta descriptions and keyword targeting. Add proper titles + descriptions to existing content. <strong>2-3 hours of work.</strong></p></div></div>
+</div>
+<div>
+<h4 style="color:var(--warning);margin-bottom:12px">Medium-Effort, High-Return</h4>
+<div class="action-item"><div class="action-num" style="background:var(--warning)">6</div><div><h4>Andriy Writes Thought Leadership</h4><p>Your "Bridges Grew Up" post already exists. Write more founder-perspective content. "Why LP Bridges Are Dying (From a Bridge Builder)" — this gets organic shares + backlinks. <strong>You're the founder; this is authentic.</strong></p></div></div>
+<div class="action-item"><div class="action-num" style="background:var(--warning)">7</div><div><h4>Target "Comparison" Keywords</h4><p>Write "Allbridge vs Stargate", "Allbridge vs CCTP" pages. Be honest about tradeoffs — this builds trust and ranks for comparison searches. <strong>Team member writes, you review.</strong></p></div></div>
+<div class="action-item"><div class="action-num" style="background:var(--warning)">8</div><div><h4>Developer Tutorial Content</h4><p>Oleksii already writes technical posts. Expand: "How to Integrate Cross-Chain Stablecoin Payments in 10 Lines of Code" — targets B2B developers who become integrators.</p></div></div>
+<div class="action-item"><div class="action-num" style="background:var(--warning)">9</div><div><h4>Leverage Existing Backlinks</h4><p>You're listed on CoinCodex, Defiway, Exolix, PitchBook, Trustpilot (67 reviews). Contact each to update your listing with latest stats. Ask for better placement. <strong>Free, just email outreach.</strong></p></div></div>
+<div class="action-item"><div class="action-num" style="background:var(--warning)">10</div><div><h4>DefiLlama Data Pages</h4><p>You have pages on DefiLlama for Core, Classic, fees, volume. Ensure all descriptions and links are updated. This is free SEO juice from a high-authority domain.</p></div></div>
+</div>
+</div>
+</div>
+
+<div class="card" style="margin-bottom:20px">
+<h3>Keyword Strategy: Focus on What You Can Actually Win</h3>
+<p style="color:var(--muted);font-size:.9em;margin-bottom:16px">Don't chase "crypto bridge" (12K searches, dominated by Wormhole/Stargate). Fight where you can win.</p>
+
+<h4 style="margin:16px 0 10px;color:var(--accent)">Tier 1: Must-Win Keywords (Zero Competition for You)</h4>
+<table>
+<thead><tr><th>Keyword</th><th>Est. Searches</th><th>Competition</th><th>Why You Win</th><th>Action</th></tr></thead>
+<tbody>
+<tr><td><span class="keyword-tag high">bridge USDT to Tron</span></td><td>1,100</td><td><span class="badge badge-low">Low</span></td><td>38% of your volume = Tron</td><td>Guide + landing page</td></tr>
+<tr><td><span class="keyword-tag high">Tron USDT bridge</span></td><td>900</td><td><span class="badge badge-low">Low</span></td><td>CCTP doesn't cover Tron</td><td>Guide + landing page</td></tr>
+<tr><td><span class="keyword-tag high">Stellar bridge</span></td><td>480</td><td><span class="badge badge-low">Very Low</span></td><td>You're one of the only bridges on Stellar</td><td>Guide + landing page</td></tr>
+<tr><td><span class="keyword-tag high">bridge USDC to Stellar</span></td><td>320</td><td><span class="badge badge-low">Very Low</span></td><td>Soroban contracts = your unique tech</td><td>Guide + landing page</td></tr>
+<tr><td><span class="keyword-tag high">TRC-20 to ERC-20 bridge</span></td><td>600</td><td><span class="badge badge-low">Low</span></td><td>Direct Tron-Ethereum route</td><td>Programmatic landing page</td></tr>
+<tr><td><span class="keyword-tag high">Algorand bridge</span></td><td>390</td><td><span class="badge badge-low">Very Low</span></td><td>Just launched Algorand support</td><td>Already have blog post, needs SEO</td></tr>
+<tr><td><span class="keyword-tag high">SUI USDC bridge</span></td><td>540</td><td><span class="badge badge-low">Low</span></td><td>Non-EVM expertise</td><td>Guide page</td></tr>
+</tbody>
+</table>
+
+<h4 style="margin:20px 0 10px;color:var(--warning)">Tier 2: Differentiator Keywords</h4>
+<table>
+<thead><tr><th>Keyword</th><th>Est. Searches</th><th>Competition</th><th>Why It Matters</th></tr></thead>
+<tbody>
+<tr><td><span class="keyword-tag med">stablecoin bridge API</span></td><td>210</td><td><span class="badge badge-low">Very Low</span></td><td>B2B play — developers searching = future integrators</td></tr>
+<tr><td><span class="keyword-tag med">cross-chain payments API</span></td><td>350</td><td><span class="badge badge-low">Low</span></td><td>Enterprise stablecoin market is $226B+ B2B</td></tr>
+<tr><td><span class="keyword-tag med">cheapest stablecoin bridge</span></td><td>440</td><td><span class="badge badge-med">Medium</span></td><td>If you aggregate CCTP + OFT + LP = best rates</td></tr>
+<tr><td><span class="keyword-tag med">bridge without wrapped tokens</span></td><td>280</td><td><span class="badge badge-low">Low</span></td><td>Native stablecoins = your value prop</td></tr>
+<tr><td><span class="keyword-tag med">non-EVM cross-chain bridge</span></td><td>190</td><td><span class="badge badge-low">Very Low</span></td><td>Your literal core competency</td></tr>
+<tr><td><span class="keyword-tag med">cross-chain treasury management</span></td><td>150</td><td><span class="badge badge-low">Very Low</span></td><td>B2B enterprise angle</td></tr>
+</tbody>
+</table>
+
+<h4 style="margin:20px 0 10px;color:var(--primary-light)">Tier 3: Thought Leadership / Long-Tail</h4>
+<table>
+<thead><tr><th>Keyword</th><th>Est. Searches</th><th>Why It Matters</th></tr></thead>
+<tbody>
+<tr><td><span class="keyword-tag">CCTP vs liquidity pool bridge</span></td><td>390</td><td>Position honestly — show when each is better. You gain trust.</td></tr>
+<tr><td><span class="keyword-tag">USDT0 explained</span></td><td>1,200</td><td>Educate users about the market shift. Mention Allbridge as aggregator option.</td></tr>
+<tr><td><span class="keyword-tag">future of cross-chain bridges</span></td><td>350</td><td>Andriy's founder perspective. Gets backlinks and citations.</td></tr>
+<tr><td><span class="keyword-tag">cross-chain bridge security risks 2026</span></td><td>290</td><td>Your audits are a competitive advantage in trust content.</td></tr>
+<tr><td><span class="keyword-tag">stablecoin bridge for business payments</span></td><td>180</td><td>B2B market growing 733% YoY. Position Allbridge SDK as infrastructure.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- ========== CONTENT WEAPONS ========== -->
+<div id="content" class="section">
+<div class="card" style="margin-bottom:20px">
+<h3>Content Strategy: You Have 31 Blog Posts. Make Them Work Harder.</h3>
+<p style="color:var(--muted);font-size:.9em;margin-bottom:16px">Your team already writes (Yuriy: 16 posts, Oleksii: 7). The problem isn't output — it's that posts aren't SEO-optimized and don't target the right keywords.</p>
+
+<h4 style="margin:16px 0 10px;color:var(--accent)">Quick Wins: Optimize Existing Posts (Week 1)</h4>
+<table>
+<thead><tr><th>Existing Post</th><th>Current Issue</th><th>SEO Fix</th><th>Target Keyword</th></tr></thead>
+<tbody>
+<tr><td>Exploring Stellar: How It's Different from EVM</td><td>No keyword targeting</td><td>Retitle: "Stellar Bridge Guide: Transfer USDC to Stellar via Allbridge"</td><td>Stellar bridge, bridge USDC Stellar</td></tr>
+<tr><td>Exploring TRON: How It's Different from EVM</td><td>Educational, not transactional</td><td>Add bridge CTA + retitle: "How to Bridge USDT to Tron (TRC-20) — Complete Guide"</td><td>bridge USDT Tron, TRC-20 bridge</td></tr>
+<tr><td>Exploring Sui: How It's Different from EVM</td><td>No bridge-specific content</td><td>Add "How to Bridge USDC to SUI" section with steps</td><td>SUI bridge, bridge USDC SUI</td></tr>
+<tr><td>Liquidity Pools Explained</td><td>Generic title</td><td>Retitle: "How Cross-Chain Liquidity Pools Work (And Why They Beat Wrapped Tokens)"</td><td>liquidity pools bridge, no wrapped tokens</td></tr>
+<tr><td>Integrating Allbridge Core</td><td>Developer-only audience</td><td>Add meta description targeting "stablecoin bridge API integration"</td><td>bridge API, cross-chain SDK</td></tr>
+<tr><td>Bridges Grew Up (Andriy's post)</td><td>Great content, no SEO</td><td>Add meta: "Why Cross-Chain Bridges Are Evolving Beyond LP Pools"</td><td>future of bridges, bridge evolution</td></tr>
+<tr><td>Detecting Positive Arbitrage</td><td>Very niche</td><td>Retitle: "Cross-Chain Arbitrage Bot: Detect Opportunities with Allbridge Core API"</td><td>cross-chain arbitrage, bridge arbitrage</td></tr>
+</tbody>
+</table>
+
+<h4 style="margin:20px 0 10px;color:var(--warning)">New Content to Write (Prioritized by ROI)</h4>
+<table>
+<thead><tr><th>#</th><th>Title</th><th>Writer</th><th>Target Keywords</th><th>Why Now</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>How to Bridge USDT to Tron: Complete 2026 Guide</td><td>Yuriy</td><td>bridge USDT Tron, TRC-20 bridge</td><td>Your #1 revenue chain + zero competition</td></tr>
+<tr><td>2</td><td>Cheapest Way to Bridge Stablecoins in 2026 (Data Comparison)</td><td>Oleksii</td><td>cheapest bridge, stablecoin bridge fees</td><td>Use YOUR data to show real costs</td></tr>
+<tr><td>3</td><td>Allbridge Core Cross-Chain Report: Q1 2026</td><td>Anyone</td><td>cross-chain bridge data, stablecoin flows</td><td>Unique data nobody else has</td></tr>
+<tr><td>4</td><td>CCTP V2 vs Liquidity Pool Bridges: When to Use Each</td><td>Andriy</td><td>CCTP vs bridge, stablecoin bridge comparison</td><td>Honest take = trust. You integrate CCTP anyway.</td></tr>
+<tr><td>5</td><td>How to Add Cross-Chain Stablecoin Payments to Your App (SDK Guide)</td><td>Oleksii</td><td>bridge API, cross-chain payments SDK</td><td>B2B developer funnel</td></tr>
+<tr><td>6</td><td>What is USDT0? A Builder's Perspective</td><td>Andriy</td><td>USDT0 explained, USDT0 vs USDT</td><td>Trending topic + positions you as expert</td></tr>
+<tr><td>7</td><td>Stellar Stablecoin Bridge: Why Soroban Changes Everything</td><td>Yuriy</td><td>Stellar bridge, Soroban bridge</td><td>Zero competition + you have unique tech</td></tr>
+<tr><td>8</td><td>Cross-Chain Stablecoin Transfers for Business Treasury</td><td>Andriy</td><td>cross-chain treasury, B2B stablecoin bridge</td><td>$226B B2B stablecoin market growing 733% YoY</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="card" style="margin-bottom:20px">
+<h3>Programmatic SEO: Route Landing Pages</h3>
+<p style="color:var(--muted);font-size:.9em;margin-bottom:16px">This is the highest-leverage SEO tactic for your protocol. Generate one landing page per route pair, programmatically.</p>
+
+<div class="grid grid-2" style="margin-top:12px">
+<div>
+<h4 style="color:var(--primary-light);margin-bottom:8px">How It Works</h4>
+<p style="color:var(--muted);font-size:.85em;margin-bottom:12px">For each supported route (e.g., USDT from Ethereum to Tron), create a page at:<br><code style="color:var(--accent)">allbridge.io/bridge/usdt-ethereum-to-tron</code></p>
+<p style="color:var(--muted);font-size:.85em;margin-bottom:12px">Each page includes:</p>
+<ul style="padding-left:16px;font-size:.85em;color:var(--muted);line-height:1.8">
+<li>H1: "Bridge USDT from Ethereum to Tron"</li>
+<li>Live fee estimate + time estimate</li>
+<li>Step-by-step instructions (3-4 steps)</li>
+<li>Direct link to start the bridge on core.allbridge.io</li>
+<li>FAQ section (how long? how much? is it safe?)</li>
+<li>Schema markup (HowTo + FAQ)</li>
+</ul>
+</div>
+<div>
+<h4 style="color:var(--primary-light);margin-bottom:8px">Scale</h4>
+<p style="color:var(--muted);font-size:.85em;margin-bottom:12px">If you support 20 chains x 2 stablecoins, that's potentially <strong>200+ unique landing pages</strong>, each targeting a unique long-tail keyword.</p>
+<p style="color:var(--muted);font-size:.85em;margin-bottom:12px">Examples of pages that would rank immediately:</p>
+<ul style="padding-left:16px;font-size:.85em;color:var(--muted);line-height:1.8">
+<li style="color:var(--accent)">/bridge/usdt-ethereum-to-tron (YOUR top route)</li>
+<li style="color:var(--accent)">/bridge/usdc-solana-to-stellar (ZERO competition)</li>
+<li style="color:var(--accent)">/bridge/usdt-tron-to-arbitrum</li>
+<li style="color:var(--accent)">/bridge/usdc-ethereum-to-sui</li>
+<li style="color:var(--accent)">/bridge/usdt-bsc-to-solana</li>
+<li>/bridge/usdc-polygon-to-tron</li>
+<li>/bridge/usdt-avalanche-to-tron</li>
+<li>/bridge/usdc-algorand-to-ethereum</li>
+</ul>
+<p style="color:var(--warning);font-size:.85em;margin-top:12px"><strong>Dev effort: 1-2 days.</strong> Template + dynamic data from your API. Massive long-tail SEO value.</p>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>Content Distribution (Zero Budget)</h3>
+<div class="grid grid-3" style="margin-top:12px">
+<div>
+<h4 style="color:var(--accent);margin-bottom:8px">Twitter/X Threads</h4>
+<p style="color:var(--muted);font-size:.85em">Every blog post becomes a 5-tweet thread. Tag relevant chain ecosystems (@StellarOrg, @traborama, etc). Data threads from your analytics get organic engagement. Cost: 30 min per thread.</p>
+</div>
+<div>
+<h4 style="color:var(--primary-light);margin-bottom:8px">Developer Communities</h4>
+<p style="color:var(--muted);font-size:.85em">Post SDK tutorials on dev.to, Hashnode, Stellar community forums. Answer "how to bridge" questions on StackOverflow and Reddit. Each answer = a backlink. Cost: ongoing, 1hr/week.</p>
+</div>
+<div>
+<h4 style="color:var(--warning);margin-bottom:8px">Chain Ecosystem Co-marketing</h4>
+<p style="color:var(--muted);font-size:.85em">Stellar, SUI, Algorand want more bridges. Reach out for co-marketing: they feature you in docs, you create content about their chain. Win-win. Cost: relationship building.</p>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ========== TECHNICAL SEO ========== -->
+<div id="technical" class="section">
+<div class="card" style="margin-bottom:20px">
+<h3>Technical SEO: Critical Fixes (Dev Team Can Do All of This)</h3>
+<div class="checklist" style="margin-top:12px">
+<h4 style="color:var(--danger);margin:12px 0 8px">Day 1-2: The Biggest Wins</h4>
+<label><input type="checkbox"><span><strong>Pre-render core.allbridge.io for crawlers</strong> — Your app is a JS SPA. Google can't see it. Use prerender.io, Rendertron, or Next.js SSR. This alone could 2-3x organic traffic.</span></label>
+<label><input type="checkbox"><span><strong>Add meta description to core.allbridge.io</strong>: "Bridge stablecoins across 20+ blockchains. Swap USDT, USDC natively between Ethereum, Solana, Tron & more. No wrapped tokens."</span></label>
+<label><input type="checkbox"><span><strong>Add meta description to allbridge.io</strong>: "Cross-chain stablecoin bridge connecting EVM and non-EVM chains. Bridge USDT & USDC to Tron, Stellar, Solana, SUI & more."</span></label>
+<label><input type="checkbox"><span><strong>Add FAQPage structured data</strong> to allbridge.io homepage FAQ section (already has content, just needs schema)</span></label>
+
+<h4 style="color:var(--warning);margin:16px 0 8px">Day 3-5: High Impact</h4>
+<label><input type="checkbox"><span><strong>Create XML sitemaps</strong> for allbridge.io, core.allbridge.io, docs-core.allbridge.io</span></label>
+<label><input type="checkbox"><span><strong>Set up Google Search Console</strong> for all 3 subdomains. Verify, submit sitemaps.</span></label>
+<label><input type="checkbox"><span><strong>Add Organization schema</strong> with logo, social profiles, founding date, audit certifications</span></label>
+<label><input type="checkbox"><span><strong>Add SoftwareApplication schema</strong> for Allbridge Core</span></label>
+<label><input type="checkbox"><span><strong>Add Open Graph + Twitter Card tags</strong> to all pages (enables proper social sharing)</span></label>
+<label><input type="checkbox"><span><strong>Add alt text to all images</strong> across all domains</span></label>
+
+<h4 style="color:var(--primary-light);margin:16px 0 8px">Week 2: Route Landing Pages</h4>
+<label><input type="checkbox"><span><strong>Build programmatic route page template</strong> (see Content section)</span></label>
+<label><input type="checkbox"><span><strong>Generate 50+ route landing pages</strong> from supported routes</span></label>
+<label><input type="checkbox"><span><strong>Add HowTo + FAQ schema</strong> to each route page</span></label>
+<label><input type="checkbox"><span><strong>Add canonical URLs</strong> across all subdomains</span></label>
+<label><input type="checkbox"><span><strong>Internal link structure</strong>: blog posts → route pages → core app</span></label>
+
+<h4 style="color:var(--muted);margin:16px 0 8px">Week 3+: Ongoing</h4>
+<label><input type="checkbox"><span>Add meta descriptions to all 31 existing blog posts</span></label>
+<label><input type="checkbox"><span>Audit Core Web Vitals and optimize (LCP, CLS, FID)</span></label>
+<label><input type="checkbox"><span>Add cross-links from docs-core.allbridge.io to blog + main site</span></label>
+<label><input type="checkbox"><span>Set up robots.txt properly for each subdomain</span></label>
+<label><input type="checkbox"><span>Monitor Google Search Console weekly</span></label>
+</div>
+</div>
+
+<div class="card">
+<h3>Recommended Meta Tags</h3>
+<pre><code>&lt;!-- core.allbridge.io --&gt;
+&lt;title&gt;Allbridge Core | Bridge Stablecoins Across 20+ Chains — USDT &amp; USDC&lt;/title&gt;
+&lt;meta name="description" content="Cross-chain stablecoin bridge. Swap USDT
+ &amp; USDC natively between Ethereum, Tron, Solana, Stellar, SUI &amp; more.
+ No wrapped tokens. Low fees. 875K+ wallets."&gt;
+
+&lt;!-- allbridge.io --&gt;
+&lt;title&gt;Allbridge — Cross-Chain Stablecoin Bridge | EVM &amp; Non-EVM&lt;/title&gt;
+&lt;meta name="description" content="Bridge USDT &amp; USDC across Ethereum,
+ Tron, Solana, Stellar, SUI, Arbitrum &amp; 20+ chains. Native stablecoins,
+ no wrapped tokens. SDK &amp; API for developers."&gt;
+
+&lt;!-- Structured Data --&gt;
+&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Allbridge Core",
+  "applicationCategory": "FinanceApplication",
+  "description": "Cross-chain stablecoin routing layer for USDT/USDC
+    across EVM and non-EVM blockchains",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0" }
+}
+&lt;/script&gt;</code></pre>
+</div>
+</div>
+
+<!-- ========== PIVOT OPPORTUNITIES ========== -->
+<div id="pivot" class="section">
+<div class="card" style="margin-bottom:20px">
+<h3>Strategic Pivots to Explore (Beyond SEO)</h3>
+<p style="color:var(--muted);font-size:.9em;margin-bottom:16px">SEO drives traffic, but these pivots address the fundamental business model challenge.</p>
+
+<div class="grid grid-2" style="margin-top:12px">
+<div class="opp-box">
+<h4>Pivot 1: Cross-Chain Routing Aggregator</h4>
+<p style="color:var(--muted);font-size:.85em;margin-bottom:8px"><strong>What:</strong> Route through CCTP, USDT0/OFT, AND your LP pools. Always give users the best rate. Become the "1inch of cross-chain."</p>
+<p style="color:var(--muted);font-size:.85em;margin-bottom:8px"><strong>Why:</strong> If you can't beat CCTP/USDT0, include them. Take a small routing fee. Users get best rates, you get volume.</p>
+<p style="color:var(--muted);font-size:.85em"><strong>Revenue:</strong> 0.05% routing fee on aggregated volume. If you route $100M/mo through CCTP = $50K/mo in fees you didn't have before.</p>
+<p style="color:var(--accent);font-size:.82em;margin-top:8px"><strong>SEO angle:</strong> "Cheapest stablecoin bridge" — because you always find the best rate.</p>
+</div>
+<div class="opp-box">
+<h4>Pivot 2: B2B Stablecoin Infrastructure API</h4>
+<p style="color:var(--muted);font-size:.85em;margin-bottom:8px"><strong>What:</strong> Position Allbridge SDK as infrastructure for fintech companies, wallets, and exchanges that need cross-chain stablecoin movement.</p>
+<p style="color:var(--muted);font-size:.85em;margin-bottom:8px"><strong>Why:</strong> B2B stablecoin payments grew 733% YoY. $226B in volume. Companies like Bridge.xyz raised $58M+ doing this. Your SDK already exists.</p>
+<p style="color:var(--muted);font-size:.85em"><strong>Revenue:</strong> Per-transaction fees or monthly API access. Higher margins than retail bridging.</p>
+<p style="color:var(--accent);font-size:.82em;margin-top:8px"><strong>SEO angle:</strong> "Stablecoin bridge API", "cross-chain payments for business"</p>
+</div>
+<div class="opp-box">
+<h4>Pivot 3: First Bridge on Emerging Chains</h4>
+<p style="color:var(--muted);font-size:.85em;margin-bottom:8px"><strong>What:</strong> Race to be first bridge on every new chain before CCTP/USDT0 arrives. You just did this with Stacks + Algorand.</p>
+<p style="color:var(--muted);font-size:.85em;margin-bottom:8px"><strong>Why:</strong> 12-24 month window before native issuers expand. First mover gets all the SEO, all the users, and often ecosystem grants.</p>
+<p style="color:var(--muted);font-size:.85em"><strong>Revenue:</strong> Ecosystem grants + all bridging fees in the early period + SEO authority for that chain.</p>
+<p style="color:var(--accent);font-size:.82em;margin-top:8px"><strong>SEO angle:</strong> "[New Chain] bridge" — you rank #1 by being first and only.</p>
+</div>
+<div class="opp-box">
+<h4>Pivot 4: Tron-Centric Specialization</h4>
+<p style="color:var(--muted);font-size:.85em;margin-bottom:8px"><strong>What:</strong> Double down on Tron. Become THE bridge between Tron and every other chain. Tron processes more USDT than Ethereum.</p>
+<p style="color:var(--muted);font-size:.85em;margin-bottom:8px"><strong>Why:</strong> Tron is 38% of your volume. CCTP doesn't cover Tron. USDT0 doesn't fully replace TRC-20 flows. Tron's user base is massive in Asia and emerging markets.</p>
+<p style="color:var(--muted);font-size:.85em"><strong>Revenue:</strong> Defend and grow your current #1 revenue stream.</p>
+<p style="color:var(--accent);font-size:.82em;margin-top:8px"><strong>SEO angle:</strong> Own EVERY "Tron bridge" keyword. Become the Wikipedia of Tron bridging.</p>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>Pivot Evaluation Matrix</h3>
+<table>
+<thead><tr><th>Pivot</th><th>Dev Effort</th><th>Revenue Potential</th><th>Time to Revenue</th><th>Defensibility</th><th>SEO Synergy</th></tr></thead>
+<tbody>
+<tr><td>Routing Aggregator</td><td><span class="badge badge-med">Medium</span></td><td><span class="badge badge-low">High</span></td><td>2-3 months</td><td><span class="badge badge-med">Medium</span></td><td><span class="badge badge-low">Excellent</span></td></tr>
+<tr><td>B2B API</td><td><span class="badge badge-low">Low (SDK exists)</span></td><td><span class="badge badge-low">Very High</span></td><td>3-6 months</td><td><span class="badge badge-low">High</span></td><td><span class="badge badge-low">Excellent</span></td></tr>
+<tr><td>First on New Chains</td><td><span class="badge badge-high">High per chain</span></td><td><span class="badge badge-med">Medium</span></td><td>Varies</td><td><span class="badge badge-med">Temporary</span></td><td><span class="badge badge-low">Excellent</span></td></tr>
+<tr><td>Tron Specialization</td><td><span class="badge badge-low">Low</span></td><td><span class="badge badge-med">Medium</span></td><td>Immediate</td><td><span class="badge badge-low">High</span></td><td><span class="badge badge-low">Excellent</span></td></tr>
+</tbody>
+</table>
+<p style="color:var(--accent);font-size:.85em;margin-top:12px"><strong>Recommendation:</strong> Pursue all 4 simultaneously. They're not mutually exclusive. Tron Specialization is immediate. B2B API + Routing Aggregator are medium-term. New Chains is opportunistic.</p>
+</div>
+</div>
+
+<!-- ========== 60-DAY BATTLE PLAN ========== -->
+<div id="roadmap" class="section">
+<div class="card" style="margin-bottom:20px">
+<h3>60-Day Battle Plan (Zero-Budget)</h3>
+<p style="color:var(--muted);font-size:.9em;margin-bottom:20px">Every action below is doable with your existing team. No external hires or agency spend required.</p>
+
+<div class="grid grid-2" style="margin-top:16px">
+<div style="background:var(--surface);border-radius:8px;padding:20px;border-top:3px solid var(--danger)">
+<h4 style="color:var(--danger)">Week 1-2: Emergency Technical SEO</h4>
+<p style="color:var(--muted);font-size:.8em;margin:8px 0 14px">Owner: Dev team | Goal: Make Google able to see your site</p>
+<div class="timeline">
+<div class="timeline-item"><h4>Day 1-2</h4><p style="color:var(--muted);font-size:.85em">Pre-render core.allbridge.io for crawlers<br>Add meta descriptions to core.allbridge.io + allbridge.io<br>Add FAQPage schema to homepage</p></div>
+<div class="timeline-item"><h4>Day 3-5</h4><p style="color:var(--muted);font-size:.85em">Set up Google Search Console (3 subdomains)<br>Create + submit XML sitemaps<br>Add Organization + SoftwareApplication schemas<br>Add OG/Twitter Card tags</p></div>
+<div class="timeline-item"><h4>Day 6-10</h4><p style="color:var(--muted);font-size:.85em">Build route landing page template<br>Generate first 50 route pages programmatically<br>Add HowTo + FAQ schema per route page</p></div>
+<div class="timeline-item"><h4>Day 11-14</h4><p style="color:var(--muted);font-size:.85em">Add meta descriptions to all 31 blog posts<br>Internal linking audit: blog → routes → app<br>Fix alt text on all images</p></div>
+</div>
+</div>
+
+<div style="background:var(--surface);border-radius:8px;padding:20px;border-top:3px solid var(--warning)">
+<h4 style="color:var(--warning)">Week 3-4: Content Blitz</h4>
+<p style="color:var(--muted);font-size:.8em;margin:8px 0 14px">Owner: Yuriy + Oleksii + Andriy | Goal: 4 high-value posts live</p>
+<div class="timeline">
+<div class="timeline-item"><h4>Week 3</h4><p style="color:var(--muted);font-size:.85em">Publish "How to Bridge USDT to Tron" (Yuriy)<br>Publish "Cheapest Stablecoin Bridge 2026" (Oleksii)<br>Retitle + optimize 3 existing "Exploring [Chain]" posts<br>Share both as Twitter/X threads</p></div>
+<div class="timeline-item"><h4>Week 4</h4><p style="color:var(--muted);font-size:.85em">Andriy writes "What is USDT0? A Builder's Perspective"<br>Publish Q1 2026 Cross-Chain Data Report (use your analytics)<br>Email outreach to CoinCodex, Defiway to update listings<br>Post SDK tutorial on dev.to</p></div>
+</div>
+</div>
+</div>
+
+<div class="grid grid-2" style="margin-top:0">
+<div style="background:var(--surface);border-radius:8px;padding:20px;border-top:3px solid var(--primary)">
+<h4 style="color:var(--primary-light)">Week 5-6: Strategic Content + Outreach</h4>
+<p style="color:var(--muted);font-size:.8em;margin:8px 0 14px">Owner: Team | Goal: Build authority + backlinks</p>
+<div class="timeline">
+<div class="timeline-item"><h4>Week 5</h4><p style="color:var(--muted);font-size:.85em">Publish "CCTP V2 vs LP Bridges" (Andriy — honest, trust-building)<br>Publish "Stellar Bridge Guide" (Yuriy)<br>Reach out to Stellar community for co-marketing<br>Answer 5 bridge-related questions on Reddit/StackOverflow</p></div>
+<div class="timeline-item"><h4>Week 6</h4><p style="color:var(--muted);font-size:.85em">Publish "Cross-Chain Payments SDK Tutorial" (Oleksii)<br>Publish "Cross-Chain Treasury Management for Business"<br>Update DefiLlama profiles with latest descriptions<br>Generate remaining route pages (100+ total)</p></div>
+</div>
+</div>
+
+<div style="background:var(--surface);border-radius:8px;padding:20px;border-top:3px solid var(--accent)">
+<h4 style="color:var(--accent)">Week 7-8: Measure + Iterate</h4>
+<p style="color:var(--muted);font-size:.8em;margin:8px 0 14px">Owner: Andriy | Goal: Data-driven optimization</p>
+<div class="timeline">
+<div class="timeline-item"><h4>Week 7</h4><p style="color:var(--muted);font-size:.85em">Review Google Search Console data (first month of data)<br>Identify which route pages are getting impressions<br>Optimize top-performing content (better titles, longer content)<br>Publish second data report</p></div>
+<div class="timeline-item"><h4>Week 8</h4><p style="color:var(--muted);font-size:.85em">Double down on what's working (more content on winning topics)<br>Cut what's not working<br>Plan next 60 days based on real data<br>Evaluate routing aggregator MVP feasibility</p></div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="card" style="margin-bottom:20px">
+<h3>Expected Impact</h3>
+<div class="chart-container"><canvas id="projectionChart"></canvas></div>
+</div>
+
+<div class="card">
+<h3>Success Metrics</h3>
+<table>
+<thead><tr><th>Metric</th><th>Now</th><th>30 Days</th><th>60 Days</th><th>How</th></tr></thead>
+<tbody>
+<tr><td>Indexed pages</td><td>~15</td><td>80+</td><td>150+</td><td>Route pages + blog SEO fixes</td></tr>
+<tr><td>Organic daily visitors</td><td>~4,771</td><td>~7,000</td><td>~12,000</td><td>Technical fixes + route pages</td></tr>
+<tr><td>Keywords in top 10</td><td>~5</td><td>~25</td><td>~60+</td><td>Long-tail route keywords</td></tr>
+<tr><td>Blog posts published</td><td>31 (unoptimized)</td><td>35 (all optimized)</td><td>39+ (8 new strategic posts)</td><td>Team writing + optimization</td></tr>
+<tr><td>Referring domains</td><td>~50</td><td>~60</td><td>~80</td><td>Outreach + developer content</td></tr>
+<tr><td>Bridge transfers/month</td><td>8,123</td><td>9,000</td><td>11,000</td><td>More discoverable = more users</td></tr>
+<tr><td>Monthly fees</td><td>$104K</td><td>$115K</td><td>$140K</td><td>More traffic + existing conversion rate</td></tr>
+</tbody>
+</table>
+<p style="color:var(--muted);font-size:.85em;margin-top:16px;text-align:center"><strong>Total cost: $0.</strong> All work is done by existing team using existing tools. The only investment is time.</p>
+</div>
+</div>
+</div>
+
+<script>
+function showSection(id){
+document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+event.target.classList.add('active');
+setTimeout(initCharts,50);
+}
+
+const C={};
+function kill(id){if(C[id]){C[id].destroy();delete C[id]}}
+const S={plugins:{legend:{labels:{color:'#94a3b8',font:{size:10}}},tooltip:{backgroundColor:'#1e293b',titleColor:'#e2e8f0',bodyColor:'#94a3b8',borderColor:'#374151',borderWidth:1}},scales:{x:{ticks:{color:'#64748b',font:{size:9},maxRotation:45},grid:{color:'rgba(51,65,85,.3)'}},y:{ticks:{color:'#64748b'},grid:{color:'rgba(51,65,85,.3)'}}}};
+
+const months=['Nov 22','Dec 22','Jan 23','Feb 23','Mar 23','Apr 23','May 23','Jun 23','Jul 23','Aug 23','Sep 23','Oct 23','Nov 23','Dec 23','Jan 24','Feb 24','Mar 24','Apr 24','May 24','Jun 24','Jul 24','Aug 24','Sep 24','Oct 24','Nov 24','Dec 24','Jan 25','Feb 25','Mar 25','Apr 25','May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26'];
+const vol=[6.2,3.4,3.4,5.8,18.3,1.5,0,2,6.1,3.9,3.6,8,15.5,102,85.6,123.2,247.8,202.9,207.5,161.5,114,118.9,82.9,128.8,180.1,156.7,198.4,106.8,117.6,53.6,121,72,101.9,77.3,59.9,64.3,121.9,63.1,70.8,34.6,6.5];
+const txs=[2370,5630,3276,9491,17322,608,54,3095,5297,4746,4375,6545,16129,72561,89584,84311,113271,108635,95849,80910,57460,48463,21081,26615,34029,31247,46017,26928,20398,28621,21585,14148,13976,10593,11859,14547,13536,10142,12161,8123,1801];
+const fees=[6.2,3.4,4,17.5,55,132.9,0,6,18.3,11.8,10.9,23.9,46.3,306.2,258.9,374.8,775,631.6,640.6,495.5,350.7,359.2,248.7,386.7,540.5,470.3,595,320.6,353.2,160.9,363.3,216.3,305.9,232.2,181.6,194.8,367,189.9,213.1,104.2,19.6];
+
+function initCharts(){
+let el;
+
+el=document.getElementById('volumeChart');
+if(el&&el.offsetParent!==null){kill('volumeChart');
+C['volumeChart']=new Chart(el,{type:'bar',data:{labels:months,datasets:[{label:'Volume ($M)',data:vol,backgroundColor:vol.map((v,i)=>i>=26?'rgba(239,68,68,.6)':'rgba(99,102,241,.5)'),borderRadius:2}]},options:{...S,plugins:{...S.plugins,legend:{display:false},annotation:{}},scales:{...S.scales,y:{...S.scales.y,ticks:{...S.scales.y.ticks,callback:v=>'$'+v+'M'}}}}});}
+
+el=document.getElementById('feesChart');
+if(el&&el.offsetParent!==null){kill('feesChart');
+C['feesChart']=new Chart(el,{type:'line',data:{labels:months,datasets:[{label:'Fees ($K)',data:fees,borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,.1)',fill:true,tension:.3,pointRadius:1.5}]},options:{...S,plugins:{...S.plugins,legend:{display:false}},scales:{...S.scales,y:{...S.scales.y,ticks:{...S.scales.y.ticks,callback:v=>'$'+v+'K'}}}}});}
+
+el=document.getElementById('transfersChart');
+if(el&&el.offsetParent!==null){kill('transfersChart');
+C['transfersChart']=new Chart(el,{type:'line',data:{labels:months,datasets:[{label:'Transfers',data:txs,borderColor:'#6366f1',backgroundColor:'rgba(99,102,241,.1)',fill:true,tension:.3,pointRadius:1.5}]},options:{...S,plugins:{...S.plugins,legend:{display:false}}}});}
+
+el=document.getElementById('stablecoinChart');
+if(el&&el.offsetParent!==null){kill('stablecoinChart');
+const lbls=['Dec 23','Mar 24','Jun 24','Sep 24','Dec 24','Mar 25','Jun 25','Sep 25','Dec 25','Mar 26'];
+const usdt=[16.2,23.1,36.1,70.2,56.8,74,76.7,71.1,77.5,65.2];
+C['stablecoinChart']=new Chart(el,{type:'bar',data:{labels:lbls,datasets:[{label:'USDT %',data:usdt,backgroundColor:'rgba(16,185,129,.7)'},{label:'USDC %',data:usdt.map(v=>100-v),backgroundColor:'rgba(99,102,241,.7)'}]},options:{...S,scales:{...S.scales,x:{...S.scales.x,stacked:true},y:{...S.scales.y,stacked:true,max:100,ticks:{...S.scales.y.ticks,callback:v=>v+'%'}}}}});}
+
+el=document.getElementById('chainChart');
+if(el&&el.offsetParent!==null){kill('chainChart');
+C['chainChart']=new Chart(el,{type:'doughnut',data:{labels:['TRX (38%)','ETH (21%)','SOL (16%)','BSC (14%)','ARB (3%)','POL (2%)','Other (6%)'],datasets:[{data:[37.7,20.8,16.1,14.3,3.2,2.1,5.8],backgroundColor:['#eb0029','#627eea','#00ffa3','#f3ba2f','#28a0f0','#8247e5','#64748b']}]},options:{plugins:{legend:{position:'right',labels:{color:'#94a3b8',padding:10,font:{size:10}}}}}});}
+
+el=document.getElementById('fullVolumeChart');
+if(el&&el.offsetParent!==null){kill('fullVolumeChart');
+C['fullVolumeChart']=new Chart(el,{type:'bar',data:{labels:months,datasets:[{data:vol,backgroundColor:vol.map((v,i)=>i>=26?'rgba(239,68,68,.5)':'rgba(99,102,241,.4)'),borderRadius:2}]},options:{...S,plugins:{...S.plugins,legend:{display:false}},scales:{...S.scales,y:{...S.scales.y,ticks:{...S.scales.y.ticks,callback:v=>'$'+v+'M'}}}}});}
+
+el=document.getElementById('extinctionChart');
+if(el&&el.offsetParent!==null){kill('extinctionChart');
+C['extinctionChart']=new Chart(el,{type:'line',data:{labels:['2024','Q1 25','Q2 25','Q3 25','Q4 25','Q1 26','Q2 26','Q3 26','Q4 26','2027'],datasets:[{label:'CCTP V2 Chains',data:[8,11,14,15,17,18,20,22,24,28],borderColor:'#6366f1',tension:.3,pointRadius:3},{label:'USDT0 Chains',data:[2,4,6,7,8,10,13,16,19,22],borderColor:'#10b981',tension:.3,pointRadius:3},{label:'Chains Where LP Bridges Still Needed',data:[25,22,18,16,14,12,10,8,6,4],borderColor:'#ef4444',borderDash:[5,5],tension:.3,pointRadius:3}]},options:{...S,scales:{...S.scales,y:{...S.scales.y,title:{display:true,text:'Number of Chains',color:'#94a3b8'}}}}});}
+
+el=document.getElementById('projectionChart');
+if(el&&el.offsetParent!==null){kill('projectionChart');
+C['projectionChart']=new Chart(el,{type:'line',data:{labels:['Now','Week 1','Week 2','Week 3','Week 4','Week 5','Week 6','Week 7','Week 8'],datasets:[{label:'Organic Visitors/Day (Conservative)',data:[4771,4800,5200,5800,6500,7500,8500,10000,12000],borderColor:'#6366f1',tension:.3,pointRadius:3},{label:'Indexed Pages',data:[15,15,70,80,85,100,130,140,150],borderColor:'#10b981',borderDash:[5,5],tension:.3,pointRadius:3,yAxisID:'y1'}]},options:{...S,scales:{...S.scales,y:{...S.scales.y,title:{display:true,text:'Daily Visitors',color:'#94a3b8'}},y1:{position:'right',title:{display:true,text:'Indexed Pages',color:'#94a3b8'},ticks:{color:'#64748b'},grid:{display:false}}}}});}
+}
+
+document.querySelectorAll('.checklist input[type=checkbox]').forEach((cb,i)=>{
+const k='seo2-'+i;cb.checked=localStorage.getItem(k)==='true';
+if(cb.checked&&cb.parentElement.querySelector('span'))cb.parentElement.querySelector('span').classList.add('done');
+cb.addEventListener('change',()=>{localStorage.setItem(k,cb.checked);const s=cb.parentElement.querySelector('span');if(s)s.classList.toggle('done',cb.checked)});
+});
+
+initCharts();
+</script>
+</body>
+</html>
