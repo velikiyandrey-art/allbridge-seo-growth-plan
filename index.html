@@ -106,6 +106,7 @@ Allbridge has <strong>$24M TVL</strong>, <strong>no VC war chest</strong>, and <
 <button onclick="showSection('thesis')">Strategic Thesis</button>
 <button onclick="showSection('local')">Local Markets</button>
 <button onclick="showSection('geo')">GEO / AI Search</button>
+<button onclick="showSection('cashmere')">Cashmere + Marketing Mix</button>
 <button onclick="showSection('pivot')">Pivot Opportunities</button>
 <button onclick="showSection('roadmap')">60-Day Battle Plan</button>
 </nav>
@@ -1452,6 +1453,154 @@ bridge fees.&lt;/p&gt;</code></pre>
 </tbody>
 </table>
 <p style="color:var(--accent);font-size:.85em;margin-top:12px"><strong>Key insight:</strong> Your monthly cross-chain data reports are the single highest-value content asset for GEO. No other bridge publishes this data. AI will cite you as the source.</p>
+</div>
+</div>
+
+<!-- ========== CASHMERE + CHEAPER USDC + FULL MARKETING MIX ========== -->
+<div id="cashmere" class="section">
+<div class="card" style="margin-bottom:20px">
+<h3>Competitor Deep Dive: Cashmere.exchange</h3>
+<p style="color:var(--muted);font-size:.9em;margin-bottom:16px">Cashmere positions itself as "Autonomous Monetary Infrastructure" — essentially building exactly what your 5-phase thesis describes. They're ahead on marketing, but behind on execution.</p>
+
+<div class="grid grid-2" style="margin-top:12px">
+<div>
+<h4 style="color:var(--danger);margin-bottom:10px">What Cashmere Offers</h4>
+<table>
+<thead><tr><th>Feature</th><th>Status</th><th>Tech</th></tr></thead>
+<tbody>
+<tr><td>Zero-slippage stablecoin bridge</td><td><span class="badge badge-low">Production</span></td><td>CCTP (USDC) + USDT0/OFT (USDT)</td></tr>
+<tr><td>Yield Vaults</td><td><span class="badge badge-med">Closed Testnet</span></td><td>Autonomous agents routing to best APR</td></tr>
+<tr><td>Privacy Transfers</td><td><span class="badge badge-high">Research</span></td><td>ZK proofs + selective disclosure</td></tr>
+<tr><td>On/Off Ramps</td><td><span class="badge badge-low">Production</span></td><td>Fiat ↔ crypto, EVM + non-EVM</td></tr>
+</tbody>
+</table>
+<p style="color:var(--muted);font-size:.82em;margin-top:8px">Architecture: on-chain contracts (TokenMessenger, UsdtOFT) + off-chain Golang relayer + real-time API fee quoting + MEV protection.</p>
+</div>
+<div>
+<h4 style="color:var(--accent);margin-bottom:10px">Where Allbridge Can Win vs Cashmere</h4>
+<div class="action-item"><div class="action-num" style="background:var(--accent)">1</div><div><h4>You have non-EVM depth they don't</h4><p>Stellar (Soroban), Tron (TRC-20), Algorand — Cashmere focuses on EVM + Solana/Sui/Aptos. Your exotic routes are uncontested.</p></div></div>
+<div class="action-item"><div class="action-num" style="background:var(--accent)">2</div><div><h4>Deposit Addresses = unique infrastructure</h4><p>Cashmere doesn't have deposit addresses. Your auto-settle cross-chain feature is a B2B differentiator nobody else offers.</p></div></div>
+<div class="action-item"><div class="action-num" style="background:var(--accent)">3</div><div><h4>Cheaper USDC alternative for chains</h4><p>Cashmere uses CCTP. You can offer chains a 10-20x cheaper minted stablecoin backed by tokens on the originating chain — bypassing Circle's costs entirely (see below).</p></div></div>
+<div class="action-item"><div class="action-num" style="background:var(--warning)">4</div><div><h4>They're ahead on marketing/positioning</h4><p>Cashmere's site is clean, messaging is sharp. Your site needs to match this level. This is fixable with content + SEO.</p></div></div>
+</div>
+</div>
+</div>
+
+<div class="card" style="margin-bottom:20px">
+<h3>New Value Prop: Cheaper USDC for Blockchains (10-20x Less Than Circle)</h3>
+<p style="color:var(--muted);font-size:.9em;margin-bottom:16px">Circle charges blockchains undisclosed (but reportedly millions in) fees for official native USDC deployment. Allbridge can offer chains a dramatically cheaper alternative.</p>
+
+<div class="grid grid-2" style="margin-top:12px">
+<div class="threat-box" style="border-color:rgba(99,102,241,.3);background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(99,102,241,.02))">
+<h4 style="color:var(--primary-light)">Circle's Model (Expensive)</h4>
+<ul style="padding-left:16px;font-size:.85em;color:var(--muted);line-height:1.8">
+<li>Circle deploys native USDC contract on each chain</li>
+<li>Partnership process required — undisclosed fees (reportedly millions)</li>
+<li>USDC on 30 chains as of Feb 2026 — but many chains still excluded</li>
+<li>Circle controls the contract — can freeze, blacklist addresses</li>
+<li>CCTP V2 for cross-chain = Circle is the sole authority</li>
+<li>Revenue: $1.68B in 2024 from reserve interest</li>
+</ul>
+</div>
+<div class="opp-box">
+<h4>Allbridge's Alternative (10-20x Cheaper)</h4>
+<ul style="padding-left:16px;font-size:.85em;color:var(--muted);line-height:1.8">
+<li><strong>Minted token on your bridge backed by token on originating chain</strong></li>
+<li>Like app.allbridge.io (Classic) — proven model, already built</li>
+<li>Chain gets USDC/USDT representation without paying Circle millions</li>
+<li>Allbridge holds collateral on source chain, mints on destination</li>
+<li>10-20x cheaper deployment cost for the blockchain</li>
+<li>Faster time-to-market than waiting for Circle partnership</li>
+<li><strong>Revenue: deployment fee + ongoing bridge transaction fees</strong></li>
+</ul>
+<p style="color:var(--accent);font-size:.82em;margin-top:8px"><strong>You pitched this to an EVM chain today.</strong> This is a B2B sales motion, not consumer — it needs outbound, not SEO. Target: chain BD teams, ecosystem funds, new L2s launching.</p>
+</div>
+</div>
+
+<h4 style="color:var(--warning);margin:16px 0 8px">Marketing This Value Prop</h4>
+<table>
+<thead><tr><th>Channel</th><th>Action</th><th>Target Audience</th></tr></thead>
+<tbody>
+<tr><td>LinkedIn</td><td>Andriy posts "Why new L2s don't need to pay Circle millions for USDC"</td><td>Chain founders, BD leads, ecosystem funds</td></tr>
+<tr><td>Twitter/X</td><td>Thread: "We offer chains native stablecoins at 10-20x less than Circle. Here's how."</td><td>Crypto Twitter, chain teams</td></tr>
+<tr><td>Blog</td><td>"How New Blockchains Can Get Stablecoin Liquidity Without Paying Millions"</td><td>SEO + GEO: "USDC alternative for blockchains"</td></tr>
+<tr><td>Direct outreach</td><td>Email/DM chain BD teams of new L2s (Monad, Berachain, MegaETH, etc.)</td><td>Decision makers at chains launching</td></tr>
+<tr><td>Conference talks</td><td>Pitch at chain-focused events (ETHDenver, Token2049 side events)</td><td>Ecosystem builders</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="card" style="margin-bottom:20px">
+<h3>Full Marketing Mix: Beyond SEO</h3>
+<p style="color:var(--muted);font-size:.9em;margin-bottom:16px">SEO is the foundation (it compounds for free). But you need a multi-channel approach. Here's every channel ranked by ROI for Allbridge's situation.</p>
+
+<table>
+<thead><tr><th>Channel</th><th>Cost</th><th>Time to Results</th><th>Best For</th><th>Priority</th></tr></thead>
+<tbody>
+<tr><td><strong>SEO + GEO</strong> (blog, route pages, schema)</td><td>Free (team time)</td><td>3-6 months</td><td>Organic user acquisition, AI citations</td><td><span class="badge badge-critical">P0</span></td></tr>
+<tr><td><strong>Twitter/X</strong> (threads, founder posts, engagement)</td><td>Free</td><td>Days-weeks</td><td>Brand awareness, crypto community, chain BD</td><td><span class="badge badge-critical">P0</span></td></tr>
+<tr><td><strong>Telegram</strong> (own channel + paid placements)</td><td>$2-16/post via Collaborator</td><td>Days</td><td>Crypto-native users, announcements, community</td><td><span class="badge badge-high">P1</span></td></tr>
+<tr><td><strong>Reddit</strong> (r/defi, r/cryptocurrency, r/solana, r/tron)</td><td>Free</td><td>Days-weeks</td><td>Organic trust, Perplexity AI citation (90% of community sources)</td><td><span class="badge badge-high">P1</span></td></tr>
+<tr><td><strong>LinkedIn</strong> (Andriy's founder posts)</td><td>Free</td><td>Days-weeks</td><td>B2B: chain teams, fintechs, institutional audience</td><td><span class="badge badge-high">P1</span></td></tr>
+<tr><td><strong>Collaborator.pro</strong> (guest posts + backlinks)</td><td>€3-400/placement</td><td>Weeks</td><td>Backlinks, local language reach, DR boost</td><td><span class="badge badge-high">P1</span></td></tr>
+<tr><td><strong>Developer communities</strong> (dev.to, Hashnode, Stack Overflow)</td><td>Free</td><td>Weeks-months</td><td>SDK adoption, B2B developer funnel</td><td><span class="badge badge-med">P2</span></td></tr>
+<tr><td><strong>Quora</strong> (answer "how to bridge" questions)</td><td>Free</td><td>Weeks</td><td>Long-tail SEO, AI citation, trust building</td><td><span class="badge badge-med">P2</span></td></tr>
+<tr><td><strong>Farcaster</strong> (Web3-native social)</td><td>Free</td><td>Weeks</td><td>Crypto-native audience, AI citation source</td><td><span class="badge badge-med">P2</span></td></tr>
+<tr><td><strong>Chain ecosystem co-marketing</strong></td><td>Free (relationship)</td><td>Weeks-months</td><td>Stellar, SUI, Algorand, Stacks want bridges</td><td><span class="badge badge-high">P1</span></td></tr>
+<tr><td><strong>Telegram channel placements</strong> (via Collaborator)</td><td>€2-16/post</td><td>Days</td><td>Cheap reach in local markets (RU, ES, TR, VN)</td><td><span class="badge badge-med">P2</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="card" style="margin-bottom:20px">
+<h3>Outlet Scoring Model (SEO + GEO)</h3>
+<p style="color:var(--muted);font-size:.9em;margin-bottom:16px">Use this scoring model to evaluate every Collaborator.pro outlet before buying.</p>
+
+<div class="grid grid-2" style="margin-top:12px">
+<div>
+<table>
+<thead><tr><th>Dimension</th><th>3 pts</th><th>2 pts</th><th>1 pt</th><th>0 pts</th></tr></thead>
+<tbody>
+<tr><td><strong>Search %</strong></td><td>&gt;50%</td><td>40-50%</td><td>35-40%</td><td>&lt;35%</td></tr>
+<tr><td><strong>DR</strong></td><td>&gt;65</td><td>50-65</td><td>40-50</td><td>&lt;40</td></tr>
+<tr><td><strong>$/DR point</strong></td><td>&lt;$2</td><td>$2-4</td><td>$4-6</td><td>&gt;$6</td></tr>
+<tr><td><strong>Category fit</strong></td><td>Crypto+Finance</td><td>Crypto+Other</td><td>Finance only</td><td>Irrelevant</td></tr>
+<tr><td><strong>Monthly traffic</strong></td><td>&gt;100K</td><td>30-100K</td><td>5-30K</td><td>&lt;5K</td></tr>
+<tr><td><strong>AI Citability (GEO)</strong></td><td>Frequently cited</td><td>Occasionally</td><td>Rarely</td><td>Never</td></tr>
+</tbody>
+</table>
+</div>
+<div>
+<h4 style="color:var(--primary-light);margin-bottom:10px">Score Thresholds (max 18)</h4>
+<div class="funnel">
+<div class="funnel-step" style="background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);border-radius:8px;padding:10px 14px"><div class="num" style="color:var(--accent)">15-18</div><div><strong style="color:var(--accent)">Must Buy</strong></div></div>
+<div class="funnel-step" style="background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3);border-radius:8px;padding:10px 14px"><div class="num" style="color:var(--warning)">11-14</div><div><strong style="color:var(--warning)">Buy if budget allows</strong></div></div>
+<div class="funnel-step" style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:10px 14px"><div class="num" style="color:#d97706">7-10</div><div><strong style="color:#d97706">Consider only</strong></div></div>
+<div class="funnel-step" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:10px 14px"><div class="num" style="color:var(--danger)">&lt;7</div><div><strong style="color:var(--danger)">Skip</strong></div></div>
+</div>
+<h4 style="color:var(--danger);margin:12px 0 6px">Auto-Disqualify</h4>
+<ul style="padding-left:16px;font-size:.85em;color:var(--muted);line-height:1.8">
+<li>Search traffic &lt; 35% → <strong>SKIP</strong></li>
+<li>DR &lt; 40 → <strong>SKIP</strong></li>
+<li>Price/DR &gt; $5 → <strong>SKIP</strong></li>
+</ul>
+<p style="color:var(--muted);font-size:.82em;margin-top:8px"><em>AI Citability = how often AI engines (ChatGPT, Perplexity, Google AI) cite this outlet as a source.</em></p>
+</div>
+</div>
+
+<h4 style="margin:16px 0 10px;color:var(--accent)">Top Outlets Scored</h4>
+<table>
+<thead><tr><th>Outlet</th><th>Lang</th><th>Search%</th><th>DR</th><th>$/DR</th><th>Category</th><th>Traffic</th><th>GEO</th><th>Score</th><th>Verdict</th></tr></thead>
+<tbody>
+<tr><td>altcoininvestor.com</td><td>EN</td><td>46%</td><td>70</td><td>$2.1</td><td>Crypto+Finance</td><td>9.1K</td><td>Occasionally</td><td><strong>14</strong></td><td><span class="badge badge-med">Buy</span></td></tr>
+<tr><td>psychreg.org</td><td>EN</td><td>54%</td><td>73</td><td>$2.1</td><td>Crypto+Other</td><td>56.7K</td><td>Occasionally</td><td><strong>15</strong></td><td><span class="badge badge-low">Must Buy</span></td></tr>
+<tr><td>timestabloid.com</td><td>EN</td><td>20%</td><td>55</td><td>$2.6</td><td>Crypto+Finance</td><td>205K</td><td>Rarely</td><td><strong>10</strong></td><td><span class="badge badge-med">Consider</span></td></tr>
+<tr><td>ibra.com.ua</td><td>RU</td><td>75%</td><td>39</td><td>$0.1</td><td>Crypto+Finance</td><td>169K</td><td>Rarely</td><td><strong>11*</strong></td><td><span class="badge badge-med">Buy (RU)</span></td></tr>
+<tr><td>territoriobitcoin.com</td><td>ES</td><td>~40%</td><td>39</td><td>$2.6</td><td>Crypto</td><td>17K</td><td>Rarely</td><td><strong>9</strong></td><td><span class="badge badge-med">Consider (ES)</span></td></tr>
+<tr><td>edy.com.mx</td><td>ES</td><td>54%</td><td>26</td><td>$1.4</td><td>Crypto+Other</td><td>124K</td><td>Rarely</td><td><strong>10*</strong></td><td><span class="badge badge-med">Consider (ES)</span></td></tr>
+</tbody>
+</table>
+<p style="color:var(--muted);font-size:.82em;margin-top:8px">* ibra.com.ua and edy.com.mx fail DR&lt;40 auto-disqualify for English campaigns, but for local language reach the ROI is exceptional (€4 and €32 respectively). Use for regional growth, not backlink authority.</p>
 </div>
 </div>
 
