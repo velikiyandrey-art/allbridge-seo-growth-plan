@@ -218,6 +218,7 @@ Allbridge has <strong>$24M TVL</strong>, <strong>no VC war chest</strong>, and <
 <button onclick="showSection('thesis')">Strategic Thesis</button>
 <button onclick="showSection('local')">Local Markets</button>
 <button onclick="showSection('geo')">GEO / AI Search</button>
+<button onclick="showSection('privacy-users')">Privacy Users (Key TA)</button>
 <button onclick="showSection('intel')">Product Intel</button>
 <button onclick="showSection('cashmere')">Cashmere + Marketing Mix</button>
 <button onclick="showSection('pivot')">Pivot Opportunities</button>
@@ -1569,6 +1570,131 @@ bridge fees.&lt;/p&gt;</code></pre>
 </div>
 </div>
 
+<!-- ========== PRIVACY USERS - KEY TARGET AUDIENCE ========== -->
+<div id="privacy-users" class="section">
+<div class="card" style="margin-bottom:20px">
+<h3>Theory: Your Primary User Wants to Break the Chain-Address Link</h3>
+<p style="color:var(--muted);font-size:.9em;margin-bottom:16px">Your data shows Tron→ETH, Tron→Solana, ETH→Tron as top routes. Average transfer size is growing ($4,259 in Feb 2026). These aren't casual DeFi users — they're whales and operators who specifically want to <strong>disconnect their originating wallet from their destination wallet</strong> across different blockchain ecosystems.</p>
+
+<div class="grid grid-2" style="margin-top:12px">
+<div class="opp-box" style="border-color:rgba(99,102,241,.4)">
+<h4 style="color:var(--primary-light)">The Theory (Verified by Research)</h4>
+<p style="color:var(--muted);font-size:.85em;margin-bottom:12px">When a user bridges from Tron to Ethereum via Allbridge Core, something important happens:</p>
+<ul style="padding-left:16px;font-size:.85em;color:var(--muted);line-height:2">
+<li>Source: TRC-20 address on Tron</li>
+<li>Bridge: Allbridge Core pool contract (shared pool with many users)</li>
+<li>Destination: Fresh ERC-20 address on Ethereum</li>
+</ul>
+<p style="color:var(--muted);font-size:.85em;margin-top:8px">The <strong>bridge pool acts as a mixing point</strong>. Funds from many users enter the same pool contract. On the destination side, funds come from the pool — not from the originating address. Forensic tools must match timing, amount, and bridge metadata to link source→destination.</p>
+<p style="color:var(--accent);font-size:.85em;margin-top:8px"><strong>When users combine multiple routes (LP pool → OFT → different chain → CCTP → final destination), each hop adds a layer of complexity.</strong> Your "constructor" approach (choosing messaging type per hop) makes this even more powerful.</p>
+</div>
+<div>
+<h4 style="color:var(--danger);margin-bottom:10px">How Forensics Track Cross-Chain (The Threat)</h4>
+<table>
+<thead><tr><th>Technique</th><th>How It Works</th><th>Weakness</th></tr></thead>
+<tbody>
+<tr><td><strong>Timing correlation</strong></td><td>Match deposit time on source chain with withdrawal time on destination</td><td>If pool has many concurrent users, timing is ambiguous</td></tr>
+<tr><td><strong>Amount matching</strong></td><td>$50,000 in on Tron → $49,850 out on Ethereum (minus fees) = probable match</td><td>Non-round amounts + fee variation creates noise</td></tr>
+<tr><td><strong>Bridge metadata</strong></td><td>On-chain messages between bridge contracts contain routing data</td><td>Different messaging protocols (LP vs CCTP vs OFT) have different metadata structures</td></tr>
+<tr><td><strong>Address clustering</strong></td><td>Link addresses via common input ownership or behavioral patterns</td><td>Fresh addresses on non-EVM chains (Tron, Solana) break EVM clustering heuristics</td></tr>
+<tr><td><strong>Entity attribution</strong></td><td>Chainalysis/Elliptic databases of 134K+ known entities</td><td>Only works if wallet has prior history with known entities</td></tr>
+</tbody>
+</table>
+<p style="color:var(--muted);font-size:.82em;margin-top:8px"><strong>Key:</strong> Chainalysis covers 27+ chains, Elliptic 100+, TRM 57+. They track 300+ bridges and 325M+ swaps. But cross-ecosystem hops (EVM↔Tron, EVM↔Solana) are <strong>significantly harder to trace</strong> than EVM↔EVM because:</p>
+<ul style="padding-left:16px;font-size:.82em;color:var(--muted);line-height:1.8">
+<li>Different address formats break clustering heuristics</li>
+<li>Different chain architectures (account model vs UTXO)</li>
+<li>Tron's massive volume ($7.9T USDT/year) creates enormous noise</li>
+<li>Non-EVM chains have less forensic coverage in general</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div class="card" style="margin-bottom:20px">
+<h3>Why Allbridge Core is Uniquely Positioned for This Audience</h3>
+<div class="grid grid-3" style="margin-top:12px">
+<div class="opp-box">
+<h4>Cross-Ecosystem Hops</h4>
+<p style="color:var(--muted);font-size:.85em">Tron↔ETH, Tron↔Solana, Stellar↔ETH, SUI↔Tron — these cross-ecosystem routes are the hardest for forensics to trace. <strong>You support 6 non-EVM chains.</strong> No other bridge covers Stellar, Tron, SUI, Algorand, AND Stacks with stablecoin pools.</p>
+</div>
+<div class="opp-box">
+<h4>Multiple Messaging Types = Route Diversity</h4>
+<p style="color:var(--muted);font-size:.85em">Users can choose: LP pool (shared liquidity) vs CCTP (burn/mint) vs OFT (lock/mint). Each has different on-chain metadata. <strong>A "constructor" that lets users pick messaging type per hop</strong> makes forensic correlation exponentially harder.</p>
+</div>
+<div class="opp-box">
+<h4>Pool-Based Architecture = Natural Mixing</h4>
+<p style="color:var(--muted);font-size:.85em">LP pools are shared by all users. Unlike 1-to-1 bridges, funds from many users comingle. On busy routes, the pool processes hundreds of transactions/day. <strong>This creates natural obfuscation without being a "mixer."</strong></p>
+</div>
+</div>
+</div>
+
+<div class="card" style="margin-bottom:20px">
+<h3>Marketing Plan: Reaching Privacy-Conscious Users</h3>
+<p style="color:var(--danger);font-size:.9em;margin-bottom:12px"><strong>⚠️ Important legal note:</strong> You CANNOT market as a privacy/mixing tool. That's how you get sanctioned (see Tornado Cash). Instead, market the <em>features</em> that naturally provide these benefits — cross-ecosystem support, route diversity, pool architecture — without explicitly positioning as privacy-focused.</p>
+
+<div class="grid grid-2" style="margin-top:16px">
+<div>
+<h4 style="color:var(--primary-light);margin-bottom:10px">Messaging Framework (Compliant)</h4>
+<table>
+<thead><tr><th>❌ Never Say</th><th>✅ Instead Say</th></tr></thead>
+<tbody>
+<tr><td>"Hide your transactions"</td><td>"Multi-route stablecoin transfers across ecosystems"</td></tr>
+<tr><td>"Break the chain link"</td><td>"Bridge between EVM and non-EVM natively"</td></tr>
+<tr><td>"Avoid tracking"</td><td>"Choose your routing: LP pools, CCTP, or OFT"</td></tr>
+<tr><td>"Privacy bridge"</td><td>"Cross-ecosystem stablecoin router with route selection"</td></tr>
+<tr><td>"Untraceable"</td><td>"Multiple messaging protocols for optimal execution"</td></tr>
+<tr><td>"Anonymous transfers"</td><td>"Non-custodial, permissionless stablecoin routing"</td></tr>
+</tbody>
+</table>
+<p style="color:var(--accent);font-size:.82em;margin-top:8px"><strong>The audience knows what they need.</strong> They'll understand "choose your route" and "cross-ecosystem" without you spelling it out. The ones who need this will find you through the features, not the promises.</p>
+</div>
+<div>
+<h4 style="color:var(--warning);margin-bottom:10px">Content That Attracts This Audience</h4>
+<div class="action-item"><div class="action-num">1</div><div><h4>"How Cross-Chain Bridge Routing Works" (Educational)</h4><p>Explain LP pools vs CCTP vs OFT technically. Show how each creates different on-chain footprints. Let readers draw their own conclusions. Target: "how cross-chain bridge works" keyword.</p></div></div>
+<div class="action-item"><div class="action-num">2</div><div><h4>"Tron to Ethereum Bridge: Complete Guide" (Transactional)</h4><p>Step-by-step. Show route options. Emphasize: "choose LP pool or OFT routing." Tron→ETH is likely your #1 privacy-seeking route. Target: "bridge USDT Tron to Ethereum".</p></div></div>
+<div class="action-item"><div class="action-num">3</div><div><h4>"Why Non-EVM Bridges Matter" (Thought Leadership)</h4><p>Explain technical differences between EVM and non-EVM address formats, account models. Naturally conveys that cross-ecosystem hops = harder to correlate. Andriy writes.</p></div></div>
+<div class="action-item"><div class="action-num">4</div><div><h4>"Route Constructor: Choose Your Messaging Protocol" (Product)</h4><p>When you build the constructor feature: explain it as "optimization tool" — users pick the cheapest/fastest route. The byproduct (route diversity) speaks for itself.</p></div></div>
+<div class="action-item"><div class="action-num">5</div><div><h4>Arbitrage Bot Tutorial (Oleksii's Series)</h4><p>Arb bots are a legitimate use case for privacy. They need to move fast across chains without revealing strategy. Technical audience that values route diversity.</p></div></div>
+</div>
+</div>
+</div>
+
+<div class="card" style="margin-bottom:20px">
+<h3>Distribution Channels for This Audience</h3>
+<p style="color:var(--muted);font-size:.9em;margin-bottom:12px">This audience doesn't read CoinDesk. They're on specific channels:</p>
+<table>
+<thead><tr><th>Channel</th><th>Why</th><th>Content Type</th><th>Budget</th></tr></thead>
+<tbody>
+<tr><td><strong>Telegram groups</strong> (crypto trading, Tron communities)</td><td>This audience lives on Telegram. Tron-specific groups are where USDT whales congregate.</td><td>Short tips: "Did you know you can choose LP pool or OFT when bridging?" + link</td><td>€2-16/post via Collaborator.pro (3,052 TG channels)</td></tr>
+<tr><td><strong>Twitter/X</strong> (crypto privacy, DeFi alpha accounts)</td><td>Alpha leak culture. "Here's a bridge that lets you pick your route" gets shared.</td><td>Threads showing route options, fee comparisons, cross-ecosystem coverage</td><td>Free (organic) or KOL mentions</td></tr>
+<tr><td><strong>Reddit</strong> (r/defi, r/tron, r/solana, r/privacy)</td><td>Users ask "how to bridge USDT from Tron" — answer with route options explained.</td><td>Helpful answers mentioning Allbridge as one option. Not shilling — educating.</td><td>Free</td></tr>
+<tr><td><strong>Russian-language crypto Telegram</strong></td><td>CIS is massive for Tron USDT. Privacy-conscious by culture. Your cheapest outlet market (€3-27/post).</td><td>Russian guides: "Как перевести USDT с Tron на Ethereum" with route selection guide</td><td>€3-27/post via Collaborator.pro (52 RU crypto sites)</td></tr>
+<tr><td><strong>Vietnamese/Turkish crypto communities</strong></td><td>SE Asia and Turkey = heavy Tron USDT users, privacy-aware audiences.</td><td>Local language bridge guides emphasizing route choice</td><td>€25-50/post via Collaborator.pro</td></tr>
+<tr><td><strong>SEO: programmatic route pages</strong></td><td>"/bridge/usdt-tron-to-ethereum" with route selector showing LP vs OFT vs CCTP options</td><td>Each page naturally shows the user they have routing choices</td><td>Free (dev time only)</td></tr>
+<tr><td><strong>Quora</strong></td><td>Users ask "cheapest way to send USDT from Tron to Ethereum" — answer with detail</td><td>Detailed answer explaining different routing mechanisms</td><td>Free</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="card">
+<h3>Product Features That Win This Audience (Roadmap Input)</h3>
+<table>
+<thead><tr><th>Feature</th><th>What It Does</th><th>Privacy Benefit</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td><strong>Route Constructor</strong></td><td>User picks messaging type (LP/CCTP/OFT) per hop in multi-hop route</td><td>Each messaging type = different on-chain metadata structure. Mix = harder correlation.</td><td><span class="badge badge-high">To Build</span></td></tr>
+<tr><td><strong>Multi-hop routing</strong></td><td>Tron → (OFT) → Arbitrum → (LP Pool) → Solana instead of direct</td><td>Each intermediate hop adds forensic complexity. Different chains + protocols per hop.</td><td><span class="badge badge-high">To Build</span></td></tr>
+<tr><td><strong>Time-delay option</strong></td><td>Destination withdrawal delayed by N minutes/hours</td><td>Breaks timing correlation — the primary forensic matching technique.</td><td><span class="badge badge-high">To Build</span></td></tr>
+<tr><td><strong>Amount splitting</strong></td><td>Split $50K transfer into 5× $10K across different routes/times</td><td>Breaks amount matching — the second primary forensic technique.</td><td><span class="badge badge-high">To Build</span></td></tr>
+<tr><td><strong>Cross-ecosystem routes</strong></td><td>Tron↔ETH, Tron↔SOL, Stellar↔ETH, SUI↔Tron</td><td>Different address formats + chain architectures break clustering heuristics.</td><td><span class="badge badge-low">Already Live</span></td></tr>
+<tr><td><strong>LP pool architecture</strong></td><td>Shared pools with many users</td><td>Natural commingling — not a mixer, but funds from many users share the same pool contract.</td><td><span class="badge badge-low">Already Live</span></td></tr>
+<tr><td><strong>Deposit Addresses</strong></td><td>Non-custodial receive addresses that auto-bridge</td><td>The deposit address is a smart contract, not a personal wallet. Adds indirection layer.</td><td><span class="badge badge-low">Live (8 EVM)</span></td></tr>
+</tbody>
+</table>
+<p style="color:var(--accent);font-size:.85em;margin-top:12px"><strong>Note:</strong> You're NOT building Tornado Cash. Everything is on-chain, non-custodial, compliant. You're building a <em>routing optimizer</em> that naturally creates forensic complexity as a byproduct of offering users the best rate and most flexible execution. The privacy benefit is a feature, not the product.</p>
+</div>
+</div>
+
 <!-- ========== PRODUCT INTEL & GROWTH RESEARCH ========== -->
 <div id="intel" class="section">
 <div class="card" style="margin-bottom:20px">
@@ -1593,10 +1719,15 @@ bridge fees.&lt;/p&gt;</code></pre>
 </table>
 </div>
 <div>
-<h4 style="color:var(--accent);margin-bottom:10px">Supported Chains (REST API confirmed)</h4>
-<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px">
-<span class="keyword-tag">ETH</span><span class="keyword-tag">BSC</span><span class="keyword-tag">TRX</span><span class="keyword-tag">ARB</span><span class="keyword-tag">POL</span><span class="keyword-tag">AVA</span><span class="keyword-tag">OPT</span><span class="keyword-tag">BAS</span><span class="keyword-tag">CEL</span><span class="keyword-tag">SOL</span><span class="keyword-tag">SNC (Sonic)</span><span class="keyword-tag">SUI</span><span class="keyword-tag">SRB (Soroban/Stellar)</span><span class="keyword-tag">STLR (Stellar)</span><span class="keyword-tag">ALG (Algorand)</span><span class="keyword-tag">STX (Stacks)</span><span class="keyword-tag">LIN (Linea)</span><span class="keyword-tag">UNI (Unichain)</span>
+<h4 style="color:var(--accent);margin-bottom:10px">Allbridge CORE Supported Chains (Verified from Docs)</h4>
+<p style="color:var(--muted);font-size:.82em;margin-bottom:8px"><strong>⚠️ Core only — not Classic.</strong> Classic has additional chains but is a separate product.</p>
+<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px">
+<span class="keyword-tag" style="border-color:var(--accent);color:var(--accent)">Ethereum</span><span class="keyword-tag" style="border-color:var(--accent);color:var(--accent)">BNB Chain</span><span class="keyword-tag" style="border-color:var(--accent);color:var(--accent)">Polygon</span><span class="keyword-tag" style="border-color:var(--accent);color:var(--accent)">Avalanche</span><span class="keyword-tag" style="border-color:var(--accent);color:var(--accent)">Arbitrum</span><span class="keyword-tag" style="border-color:var(--accent);color:var(--accent)">Base</span><span class="keyword-tag" style="border-color:var(--accent);color:var(--accent)">Celo</span><span class="keyword-tag" style="border-color:var(--accent);color:var(--accent)">Optimism</span><span class="keyword-tag" style="border-color:var(--accent);color:var(--accent)">Linea</span><span class="keyword-tag" style="border-color:var(--accent);color:var(--accent)">Unichain</span><span class="keyword-tag" style="border-color:var(--accent);color:var(--accent)">Sonic</span>
 </div>
+<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px">
+<span class="keyword-tag" style="border-color:var(--warning);color:var(--warning)">Tron ★</span><span class="keyword-tag" style="border-color:var(--warning);color:var(--warning)">Solana ★</span><span class="keyword-tag" style="border-color:var(--warning);color:var(--warning)">SUI ★</span><span class="keyword-tag" style="border-color:var(--warning);color:var(--warning)">Stellar ★</span><span class="keyword-tag" style="border-color:var(--warning);color:var(--warning)">Algorand ★ (Jan 2026)</span><span class="keyword-tag" style="border-color:var(--warning);color:var(--warning)">Stacks ★ (Mar 2026)</span>
+</div>
+<p style="color:var(--muted);font-size:.82em">★ = Non-EVM (your competitive moat). <strong>17 chains total on Core.</strong></p>
 <h4 style="color:var(--warning);margin-bottom:8px">Developer Integration (3 paths)</h4>
 <table>
 <thead><tr><th>Method</th><th>Package</th><th>Stars</th></tr></thead>
