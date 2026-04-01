@@ -218,6 +218,7 @@ Allbridge has <strong>$24M TVL</strong>, <strong>no VC war chest</strong>, and <
 <button onclick="showSection('thesis')">Strategic Thesis</button>
 <button onclick="showSection('local')">Local Markets</button>
 <button onclick="showSection('geo')">GEO / AI Search</button>
+<button onclick="showSection('intel')">Product Intel</button>
 <button onclick="showSection('cashmere')">Cashmere + Marketing Mix</button>
 <button onclick="showSection('pivot')">Pivot Opportunities</button>
 <button onclick="showSection('roadmap')">60-Day Battle Plan</button>
@@ -1565,6 +1566,107 @@ bridge fees.&lt;/p&gt;</code></pre>
 </tbody>
 </table>
 <p style="color:var(--accent);font-size:.85em;margin-top:12px"><strong>Key insight:</strong> Your monthly cross-chain data reports are the single highest-value content asset for GEO. No other bridge publishes this data. AI will cite you as the source.</p>
+</div>
+</div>
+
+<!-- ========== PRODUCT INTEL & GROWTH RESEARCH ========== -->
+<div id="intel" class="section">
+<div class="card" style="margin-bottom:20px">
+<h3>Product Intel: What You Have (Extracted from Docs + Blog + GitHub)</h3>
+<p style="color:var(--muted);font-size:.9em;margin-bottom:12px">Full inventory of Allbridge Core capabilities — mapped to volume growth opportunities.</p>
+
+<div class="grid grid-2" style="margin-top:12px">
+<div>
+<h4 style="color:var(--primary-light);margin-bottom:10px">Core Architecture</h4>
+<table>
+<thead><tr><th>Component</th><th>Detail</th></tr></thead>
+<tbody>
+<tr><td>Bridge Model</td><td>vUsd virtual stable-swap. Single-token pools with virtual 2-asset pair.</td></tr>
+<tr><td>Fee Split</td><td>80% to LPs, 20% to governance</td></tr>
+<tr><td>Rebalancing</td><td>Automatic price adjustment creates arbitrage incentives</td></tr>
+<tr><td>CCTP Routing</td><td>Circle CCTP for USDC where available</td></tr>
+<tr><td>OFT Routing</td><td>LayerZero OFT for USDT0 where available</td></tr>
+<tr><td>Extra Gas</td><td>Destination chain gas token top-up on arrival</td></tr>
+<tr><td>Deposit Addresses</td><td>Non-custodial auto-bridge on deposit. Live on 8 EVM chains.</td></tr>
+<tr><td>ABR0 Token</td><td>OFT standard. Pay relayer fees at discount.</td></tr>
+</tbody>
+</table>
+</div>
+<div>
+<h4 style="color:var(--accent);margin-bottom:10px">Supported Chains (REST API confirmed)</h4>
+<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px">
+<span class="keyword-tag">ETH</span><span class="keyword-tag">BSC</span><span class="keyword-tag">TRX</span><span class="keyword-tag">ARB</span><span class="keyword-tag">POL</span><span class="keyword-tag">AVA</span><span class="keyword-tag">OPT</span><span class="keyword-tag">BAS</span><span class="keyword-tag">CEL</span><span class="keyword-tag">SOL</span><span class="keyword-tag">SNC (Sonic)</span><span class="keyword-tag">SUI</span><span class="keyword-tag">SRB (Soroban/Stellar)</span><span class="keyword-tag">STLR (Stellar)</span><span class="keyword-tag">ALG (Algorand)</span><span class="keyword-tag">STX (Stacks)</span><span class="keyword-tag">LIN (Linea)</span><span class="keyword-tag">UNI (Unichain)</span>
+</div>
+<h4 style="color:var(--warning);margin-bottom:8px">Developer Integration (3 paths)</h4>
+<table>
+<thead><tr><th>Method</th><th>Package</th><th>Stars</th></tr></thead>
+<tbody>
+<tr><td>JS/TS SDK</td><td><code>@allbridge/bridge-core-sdk</code></td><td>28 ⭐</td></tr>
+<tr><td>REST API</td><td>Self-hosted, 25+ endpoints</td><td>2 ⭐</td></tr>
+<tr><td>Smart Contract Proxy</td><td>Example contract on GitHub</td><td>0 ⭐</td></tr>
+</tbody>
+</table>
+<p style="color:var(--muted);font-size:.82em;margin-top:8px">REST API has 25+ endpoints: raw tx, token management, pool operations, transfer status, fee quoting, bridge calculations. Full Swagger docs.</p>
+</div>
+</div>
+</div>
+
+<div class="card" style="margin-bottom:20px">
+<h3>Andriy's Vision: "Bridges Grew Up" (Jan 2026 Blog Post)</h3>
+<p style="color:var(--muted);font-size:.9em;margin-bottom:12px">Key insights from Andriy's thought leadership piece — these should shape ALL messaging:</p>
+<div class="grid grid-3" style="margin-top:12px">
+<div class="opp-box" style="border-color:rgba(239,68,68,.3)">
+<h4 style="color:var(--danger)">The IOU Problem</h4>
+<p style="color:var(--muted);font-size:.85em">Wrapped assets fractured liquidity. Users couldn't tell canonical from bridged USDC. This undermined trust in multichain infrastructure itself.</p>
+</div>
+<div class="opp-box" style="border-color:rgba(245,158,11,.3)">
+<h4 style="color:var(--warning)">The Arrival Problem</h4>
+<p style="color:var(--muted);font-size:.85em">Getting assets to a chain left users stranded without gas tokens. Bridges solved departure but ignored arrival. "Extra gas" feature solves this.</p>
+</div>
+<div class="opp-box" style="border-color:rgba(16,185,129,.3)">
+<h4 style="color:var(--accent)">The Hybrid Future</h4>
+<p style="color:var(--muted);font-size:.85em">"Most bridges didn't fail because they were technically weak. They failed because they were inconvenient in exactly the moments that mattered." Next: hybrid approach combining CCTP + OFT + pools + intents.</p>
+</div>
+</div>
+<p style="color:var(--accent);font-size:.85em;margin-top:12px"><strong>SEO/GEO gold:</strong> This narrative is original, from a named founder, with unique perspective. Republish as a Twitter thread, LinkedIn article, and adapt for Collaborator.pro guest posts. AI models will cite Andriy as a bridge industry expert.</p>
+</div>
+
+<div class="card" style="margin-bottom:20px">
+<h3>Volume Growth Levers: What the Data + Docs Tell Us</h3>
+<table>
+<thead><tr><th>Lever</th><th>Mechanism</th><th>Expected Impact</th><th>Marketing Angle</th></tr></thead>
+<tbody>
+<tr><td><strong>1. CCTP + OFT routing</strong></td><td>Route through zero-slippage native paths when available</td><td>Win back users lost to CCTP/USDT0</td><td>"We use CCTP & USDT0 too — but also cover chains they don't"</td></tr>
+<tr><td><strong>2. Intent solver integration</strong></td><td>NEAR Intents / Across as backends for CEX-level pricing</td><td>Cheapest rates on common routes → more volume</td><td>"Stop Bridging. Start Routing." — always cheapest</td></tr>
+<tr><td><strong>3. New chain launches</strong></td><td>Stacks (Mar 2026), Algorand (Jan 2026), Sonic — be first</td><td>100% market share on new chains for 6-12 months</td><td>"First bridge on [chain]" — SEO + chain ecosystem grants</td></tr>
+<tr><td><strong>4. Deposit addresses expansion</strong></td><td>Expand to Solana + Tron. Target merchants/treasuries.</td><td>B2B revenue stream independent of retail bridging</td><td>"Accept stablecoins on any chain, auto-settle to one wallet"</td></tr>
+<tr><td><strong>5. ABR0 fee discounts</strong></td><td>Users pay less with ABR0. Creates token demand loop.</td><td>Incentivize volume + ABR0 buy pressure</td><td>"Pay 20% less bridge fees with ABR0"</td></tr>
+<tr><td><strong>6. Arbitrage incentives</strong></td><td>Pool imbalances create arb opportunities (Oleksii's bot post)</td><td>Attracts bot/arb volume to rebalance pools</td><td>"Detect cross-chain arbitrage with Allbridge API"</td></tr>
+<tr><td><strong>7. Cheaper USDC for new chains</strong></td><td>Minted tokens backed by originating chain — 10-20x cheaper than Circle</td><td>New B2B revenue from chain partnerships</td><td>Direct outreach + LinkedIn + "USDC alternative" blog</td></tr>
+<tr><td><strong>8. Yield-bearing stablecoins</strong></td><td>Add USDe/sUSDe/USDY pools</td><td>Capture $20B+ yield stablecoin market</td><td>"Bridge USDe cross-chain" — zero competition keywords</td></tr>
+<tr><td><strong>9. Tron specialization</strong></td><td>Double down on TRC-20 routes (38% of volume)</td><td>Defend core revenue + grow with Tron ecosystem</td><td>Own every "bridge USDT Tron" keyword in all languages</td></tr>
+<tr><td><strong>10. SEO/GEO programmatic pages</strong></td><td>200+ route landing pages from API data</td><td>2-3x organic traffic in 60 days</td><td>Each page targets "[token] [chain A] to [chain B]" long-tail</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="card">
+<h3>Blog Content Audit: SEO Optimization Opportunities</h3>
+<p style="color:var(--muted);font-size:.9em;margin-bottom:12px">You have 30+ posts. Most lack SEO targeting. Here's the quick-win optimization for recent posts:</p>
+<table>
+<thead><tr><th>Date</th><th>Post</th><th>Current Issue</th><th>SEO Fix</th><th>GEO Potential</th></tr></thead>
+<tbody>
+<tr><td>3/4/26</td><td>Stacks on Allbridge Core</td><td>Discovery-only audience</td><td>Retitle: "Bridge USDC to Stacks (Bitcoin L2) — Complete Guide"</td><td><span class="badge badge-low">High</span> — first bridge content for Stacks</td></tr>
+<tr><td>2/11/26</td><td>ABR0 for Relayer Fees</td><td>Token-focused, niche</td><td>Add meta: "Save on bridge fees with ABR0 token"</td><td><span class="badge badge-med">Medium</span></td></tr>
+<tr><td>1/28/26</td><td>Bridges Grew Up (Andriy)</td><td>No SEO, great content</td><td>Add meta targeting "future of cross-chain bridges"</td><td><span class="badge badge-low">High</span> — founder perspective = AI citable</td></tr>
+<tr><td>1/16/26</td><td>Algorand on Allbridge</td><td>No target keyword</td><td>Retitle: "Bridge USDC to Algorand — How Allbridge Core Works"</td><td><span class="badge badge-low">High</span> — first bridge guide for Algorand</td></tr>
+<tr><td>1/14/26</td><td>Arbitrage via Pool Imbalance</td><td>Very niche title</td><td>Retitle: "Cross-Chain Arbitrage Bot: Detect Pool Opportunities"</td><td><span class="badge badge-med">Medium</span> — bot/DeFi audience</td></tr>
+<tr><td>11/19/25</td><td>Introducing Deposit Addresses</td><td>Product announcement</td><td>Add "Accept crypto payments on any chain" angle + merchant keywords</td><td><span class="badge badge-low">High</span> — unique product = AI differentiator</td></tr>
+<tr><td>10/1/25</td><td>Allbridge Yield</td><td>LP-focused only</td><td>Add "earn yield providing liquidity to cross-chain bridge" keywords</td><td><span class="badge badge-med">Medium</span></td></tr>
+<tr><td>9/16/25</td><td>Exploring SUI</td><td>Educational, no bridge CTA</td><td>Retitle: "Bridge USDC to SUI — Complete Cross-Chain Guide"</td><td><span class="badge badge-low">High</span> — SUI is growing</td></tr>
+</tbody>
+</table>
+<p style="color:var(--accent);font-size:.85em;margin-top:10px"><strong>Total effort: 3-4 hours to update all meta descriptions and titles. Impact: immediate visibility boost for 8+ pages. Free.</strong></p>
 </div>
 </div>
 
